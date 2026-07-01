@@ -1,4 +1,34 @@
-# Welcome to your Expo app 👋
+# SavGoSpend (SGO) — Prototype
+
+## Folder structure
+
+```
+sgo-prototype/
+├── app/
+│   ├── _layout.tsx              # Root stack (theme provider + StatusBar)
+│   ├── modal.tsx                # Example modal route
+│   └── (tabs)/
+│       ├── _layout.tsx          # Tab bar config — 4 tabs, accessibility sizing
+│       ├── index.tsx            # Home tab (placeholder)
+│       ├── card.tsx             # Card tab (placeholder)
+│       ├── map.tsx              # Map tab (placeholder)
+│       └── profile.tsx          # Profile tab (placeholder)
+├── components/
+│   ├── ui/
+│   │   ├── icon-symbol.tsx      # Cross-platform icon (SF Symbols → Material Icons)
+│   │   └── icon-symbol.ios.tsx  # iOS-native SF Symbols override
+│   └── ...                      # Shared components (ThemedText, HapticTab, etc.)
+└── constants/
+    └── theme.ts                 # Colors (SGO_BRAND placeholder) + Fonts
+```
+
+### Brand color placeholder
+`constants/theme.ts` exports `SGO_BRAND = '#2B7A77'` as the active tab tint.
+Replace this hex once the Visual Identity Guide is finalized.
+
+---
+
+
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 

@@ -5,7 +5,10 @@
 
 import { Platform } from 'react-native';
 
-const tintColorLight = '#0a7ea4';
+// SGO brand active color — replace with final hex from Visual Identity Guide
+const SGO_BRAND = '#2B7A77';
+
+const tintColorLight = SGO_BRAND;
 const tintColorDark = '#fff';
 
 export const Colors = {
