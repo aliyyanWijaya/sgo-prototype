@@ -1,6 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
 import { useState } from 'react';
+
+import { generateMemberData, saveMemberData } from '@/utils/membership';
 import {
   KeyboardAvoidingView,
   Platform,
@@ -46,7 +48,7 @@ function WelcomeStep({
         </Text>
 
         <View style={styles.inputGroup}>
-          <Text style={styles.inputLabel}>What's your name?</Text>
+          <Text style={styles.inputLabel}>{"What's your name?"}</Text>
           <TextInput
             style={styles.input}
             value={name}
@@ -183,7 +185,7 @@ function DoneStep({
       <View style={styles.checkCircle}>
         <Text style={styles.checkMark}>✓</Text>
       </View>
-      <Text style={styles.doneTitle}>You're all set!</Text>
+      <Text style={styles.doneTitle}>{"You're all set!"}</Text>
       <Text style={styles.doneSubtitle}>
         Welcome to SavGoSpend{name ? `, ${name}` : ''}.
       </Text>
@@ -233,6 +235,8 @@ export default function OnboardingScreen() {
       setPreference('notifications', notifications),
       setPreference('shareLocation', shareLocation),
       setPreference('largerText', largerText),
+      // Generate the membership card data once and persist it permanently
+      saveMemberData(generateMemberData(trimmedName)),
     ]);
     await AsyncStorage.setItem('onboarding_completed', 'true');
     router.replace('/(tabs)');
