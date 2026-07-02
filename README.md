@@ -1,80 +1,98 @@
-# SavGoSpend (SGO) — Prototype
+# SavGoSpend (SGO)
 
-## Folder structure
-
-```
-sgo-prototype/
-├── app/
-│   ├── _layout.tsx              # Root stack (theme provider + StatusBar)
-│   ├── modal.tsx                # Example modal route
-│   └── (tabs)/
-│       ├── _layout.tsx          # Tab bar config — 4 tabs, accessibility sizing
-│       ├── index.tsx            # Home tab (placeholder)
-│       ├── card.tsx             # Card tab (placeholder)
-│       ├── map.tsx              # Map tab (placeholder)
-│       └── profile.tsx          # Profile tab (placeholder)
-├── components/
-│   ├── ui/
-│   │   ├── icon-symbol.tsx      # Cross-platform icon (SF Symbols → Material Icons)
-│   │   └── icon-symbol.ios.tsx  # iOS-native SF Symbols override
-│   └── ...                      # Shared components (ThemedText, HapticTab, etc.)
-└── constants/
-    └── theme.ts                 # Colors (SGO_BRAND placeholder) + Fonts
-```
-
-### Brand color placeholder
-`constants/theme.ts` exports `SGO_BRAND = '#2B7A77'` as the active tab tint.
-Replace this hex once the Visual Identity Guide is finalized.
+A dignity-first smart rewards app for independent travellers aged 65 and over.
 
 ---
 
+## About
 
+SavGoSpend connects senior travellers with participating retailers and local travel information, guided by a warm in-app companion called **Aroha**. This repository contains a working MVP prototype built to demonstrate core functionality based on SGO's living Build Brief.
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+---
 
-## Get started
+## Features Implemented
 
-1. Install dependencies
+- **Onboarding flow** — welcome screen, opt-in settings (notifications, location sharing, larger text), completion confirmation
+- **Home screen** — three-tile navigation (Nearby Retailers, What's On, Good to Know)
+- **Digital membership card** — offline-available card with mock member data (name, member number, tier, join date), persisted locally
+- **Aroha AI companion** — chat widget powered by the Anthropic Claude API, with a warm, plain-language persona and a first-encounter pronunciation guide
+- **Nearby Retailers map** — interactive map (react-native-maps) with sample retailer markers, profiles, and a list view alternative
+- **Smart Rewards UI** — five-tier progression display (Bronze → Silver → Gold → Platinum → Kiwi Elite) with mock points
+- **Post a Tip** — community tip submission form with a pending review list
+- **Emergency SOS button** — fixed header button on the Home screen with a confirmation flow before simulating an emergency alert
+- **Accessibility** — global Larger Text toggle affecting font scale across the app
+
+---
+
+## Tech Stack
+
+- **React Native (Expo)** — cross-platform mobile framework
+- **React Navigation** — tab-based navigation (Home, Card, Map, Profile)
+- **AsyncStorage** — local persistence (onboarding status, member data, accessibility preferences)
+- **react-native-maps** — Nearby Retailers map view
+- **Express.js** — lightweight backend serving the Aroha chat endpoint
+- **Anthropic Claude API** — powers Aroha's conversational responses
+- **React Context API** — global state for accessibility and user preferences
+
+---
+
+## How to Run Locally
+
+### Prerequisites
+
+- Node.js and npm installed
+- Expo Go app (for testing on a physical device) or an iOS/Android emulator
+- An Anthropic API key (for Aroha chat functionality)
+
+### Setup
+
+1. Clone the repository and install dependencies:
 
    ```bash
    npm install
    ```
 
-2. Start the app
+2. Set up the backend server for Aroha:
+
+   ```bash
+   cd server
+   npm install
+   ```
+
+   Create a `.env` file in the `server` folder with:
+
+   ```
+   ANTHROPIC_API_KEY=your_api_key_here
+   ```
+
+   Then start the backend:
+
+   ```bash
+   node server.js
+   ```
+
+3. In a separate terminal, start the Expo app from the project root:
 
    ```bash
    npx expo start
    ```
 
-In the output, you'll find options to open the app in a
+4. Scan the QR code with Expo Go, or press `i` / `a` to launch an iOS/Android emulator.
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+---
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## Roadmap — Not Yet Implemented
 
-## Get a fresh project
+This MVP focuses on demonstrating core user flows and interactions. The following are planned for a full production build:
 
-When you're ready, run:
+- **Firebase authentication and real data storage** — current version uses local mock data and AsyncStorage only
+- **SGO admin panel** — for founders to manage tips and retailer listings
+- **Google Translate API / DeepL multilingual support**
+- **Full compliance work for the NZ Privacy Act 2020**
+- **Country-specific animated map markers** (Kiwi for NZ, Kangaroo for Australia) — stretch goal
 
-```bash
-npm run reset-project
-```
+---
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## Note
 
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+This is a 3-day MVP prototype built as part of an internship application, based on an approved design system and a comprehensive Build Brief provided by SGO's founders. It is intended to demonstrate technical capability and understanding of the product vision, not as a production-ready release.
