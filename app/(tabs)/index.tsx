@@ -1,6 +1,6 @@
 import { Feather } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useUserPreferences } from '@/context/UserPreferencesContext';
@@ -17,6 +17,24 @@ type Tile = {
 export default function HomeScreen() {
   const { memberName, scale } = useUserPreferences();
   const displayName = memberName || 'Traveller';
+
+  const handleSosPress = () => {
+    Alert.alert(
+      'Emergency SOS',
+      'Do you need emergency help?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Call for Help',
+          style: 'destructive',
+          onPress: () => {
+            Alert.alert('Help is on the way', 'Emergency contact would be notified');
+          },
+        },
+      ],
+      { cancelable: true }
+    );
+  };
 
   const tiles: Tile[] = [
     {
@@ -47,6 +65,19 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={styles.safe}>
+      <View style={styles.topBar}>
+        <Text style={[styles.logoText, { fontSize: scale(20) }]}>SGO</Text>
+        <Pressable
+          style={({ pressed }) => [styles.sosButton, pressed && styles.sosButtonPressed]}
+          onPress={handleSosPress}
+          accessibilityRole="button"
+          accessibilityLabel="Emergency SOS"
+          accessibilityHint="Shows options to call for emergency help">
+          <Feather name="alert-circle" size={20} color="#FFFFFF" />
+          <Text style={[styles.sosLabel, { fontSize: scale(15) }]}>SOS</Text>
+        </Pressable>
+      </View>
+
       <ScrollView
         contentContainerStyle={styles.scroll}
         showsVerticalScrollIndicator={false}>
@@ -100,6 +131,50 @@ const styles = StyleSheet.create({
   scroll: {
     flexGrow: 1,
     backgroundColor: '#F5F0EB',
+  },
+  topBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#FFFFFF',
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 6,
+    elevation: 3,
+    zIndex: 10,
+  },
+  logoText: {
+    fontWeight: '800',
+    color: '#2B7A77',
+    letterSpacing: 0.5,
+  },
+  sosButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    minHeight: 48,
+    minWidth: 64,
+    backgroundColor: '#DC2626',
+    borderRadius: 24,
+    paddingHorizontal: 16,
+    shadowColor: '#DC2626',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 4,
+  },
+  sosButtonPressed: {
+    opacity: 0.85,
+    transform: [{ scale: 0.97 }],
+  },
+  sosLabel: {
+    color: '#FFFFFF',
+    fontWeight: '800',
+    letterSpacing: 0.5,
   },
   header: {
     backgroundColor: '#2B7A77',
