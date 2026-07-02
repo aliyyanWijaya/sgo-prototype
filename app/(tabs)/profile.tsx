@@ -1,7 +1,17 @@
-import { ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useState } from "react";
+import {
+  Modal,
+  ScrollView,
+  StyleSheet,
+  Switch,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
+import { Pressable } from "react-native-gesture-handler";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-import { useUserPreferences } from '@/context/UserPreferencesContext';
+import { useUserPreferences } from "@/context/UserPreferencesContext";
 import {
   getCurrentTier,
   getNextTier,
@@ -9,9 +19,9 @@ import {
   MOCK_REWARDS,
   REWARD_TIERS,
   TIER_COLORS,
-} from '@/data/rewards';
+} from "@/data/rewards";
 
-const BRAND = '#2B7A77';
+const BRAND = "#2B7A77";
 
 type SettingRowProps = {
   label: string;
@@ -22,18 +32,29 @@ type SettingRowProps = {
   testID?: string;
 };
 
-function SettingRow({ label, description, value, onValueChange, scale, testID }: SettingRowProps) {
+function SettingRow({
+  label,
+  description,
+  value,
+  onValueChange,
+  scale,
+  testID,
+}: SettingRowProps) {
   return (
     <View style={styles.settingRow}>
       <View style={styles.settingInfo}>
-        <Text style={[styles.settingLabel, { fontSize: scale(17) }]}>{label}</Text>
-        <Text style={[styles.settingDesc, { fontSize: scale(14) }]}>{description}</Text>
+        <Text style={[styles.settingLabel, { fontSize: scale(17) }]}>
+          {label}
+        </Text>
+        <Text style={[styles.settingDesc, { fontSize: scale(14) }]}>
+          {description}
+        </Text>
       </View>
       <Switch
         testID={testID}
         value={value}
         onValueChange={onValueChange}
-        trackColor={{ false: '#D1D5DB', true: BRAND }}
+        trackColor={{ false: "#D1D5DB", true: BRAND }}
         thumbColor="#FFFFFF"
         accessibilityRole="switch"
         accessibilityLabel={label}
@@ -43,10 +64,30 @@ function SettingRow({ label, description, value, onValueChange, scale, testID }:
 }
 
 export default function ProfileScreen() {
-  const { memberName, notifications, shareLocation, largerText, setPreference, scale } =
-    useUserPreferences();
-  const displayName = memberName || 'Traveller';
+  const {
+    memberName,
+    notifications,
+    shareLocation,
+    largerText,
+    setPreference,
+    scale,
+  } = useUserPreferences();
+  const displayName = memberName || "Traveller";
   const initial = displayName[0].toUpperCase();
+
+  const [editModalVisible, setEditModalVisible] = useState(false);
+  const [tempName, setTempName] = useState(displayName);
+
+  const openEditModal = () => {
+    setTempName(displayName); // reset ke value sekarang tiap dibuka
+    setEditModalVisible(true);
+  };
+
+  const handleSaveName = () => {
+    if (!tempName.trim()) return; // jangan simpan kalau kosong
+    setPreference("memberName", tempName.trim());
+    setEditModalVisible(false);
+  };
 
   const currentTier = getCurrentTier(MOCK_REWARDS.points);
   const nextTier = getNextTier(MOCK_REWARDS.points);
@@ -54,31 +95,57 @@ export default function ProfileScreen() {
 
   return (
     <SafeAreaView style={styles.safe}>
-      <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        contentContainerStyle={styles.scroll}
+        showsVerticalScrollIndicator={false}
+      >
         <View style={styles.header}>
           <Text style={[styles.heading, { fontSize: scale(26) }]}>Profile</Text>
         </View>
 
         <View style={styles.memberCard}>
           <View style={styles.avatar}>
-            <Text style={[styles.avatarInitial, { fontSize: scale(30) }]}>{initial}</Text>
+            <Text style={[styles.avatarInitial, { fontSize: scale(30) }]}>
+              {initial}
+            </Text>
           </View>
-          <Text style={[styles.memberName, { fontSize: scale(22) }]}>{displayName}</Text>
-          <Text style={[styles.memberLabel, { fontSize: scale(14) }]}>SGO Member</Text>
+          <Text style={[styles.memberName, { fontSize: scale(22) }]}>
+            {displayName}
+          </Text>
+          <Text style={[styles.memberLabel, { fontSize: scale(14) }]}>
+            SGO Member
+          </Text>
+
+          <Pressable onPress={openEditModal} style={styles.editButton}>
+            <Text style={[styles.editButtonText, { fontSize: scale(14) }]}>
+              Edit Profile
+            </Text>
+          </Pressable>
         </View>
 
         <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { fontSize: scale(12) }]}>SMART REWARDS</Text>
+          <Text style={[styles.sectionTitle, { fontSize: scale(12) }]}>
+            SMART REWARDS
+          </Text>
           <View style={styles.card}>
             <View style={styles.rewardsSummary}>
               <View>
                 <Text style={[styles.pointsValue, { fontSize: scale(30) }]}>
                   {MOCK_REWARDS.points.toLocaleString()}
                 </Text>
-                <Text style={[styles.pointsLabel, { fontSize: scale(13) }]}>points balance</Text>
+                <Text style={[styles.pointsLabel, { fontSize: scale(13) }]}>
+                  points balance
+                </Text>
               </View>
-              <View style={[styles.tierBadge, { backgroundColor: TIER_COLORS[currentTier] }]}>
-                <Text style={[styles.tierBadgeText, { fontSize: scale(13) }]}>{currentTier}</Text>
+              <View
+                style={[
+                  styles.tierBadge,
+                  { backgroundColor: TIER_COLORS[currentTier] },
+                ]}
+              >
+                <Text style={[styles.tierBadgeText, { fontSize: scale(13) }]}>
+                  {currentTier}
+                </Text>
               </View>
             </View>
 
@@ -87,18 +154,25 @@ export default function ProfileScreen() {
               accessible
               accessibilityRole="progressbar"
               accessibilityLabel="Reward tier progress"
-              accessibilityValue={{ text: `${currentTier} tier, ${MOCK_REWARDS.points} points` }}
+              accessibilityValue={{
+                text: `${currentTier} tier, ${MOCK_REWARDS.points} points`,
+              }}
             >
               {REWARD_TIERS.map((tier) => {
                 const isCurrent = tier === currentTier;
                 const isUnlocked =
-                  REWARD_TIERS.indexOf(tier) <= REWARD_TIERS.indexOf(currentTier);
+                  REWARD_TIERS.indexOf(tier) <=
+                  REWARD_TIERS.indexOf(currentTier);
                 return (
                   <View key={tier} style={styles.tierSegmentWrap}>
                     <View
                       style={[
                         styles.tierSegment,
-                        { backgroundColor: isUnlocked ? TIER_COLORS[tier] : '#E5E7EB' },
+                        {
+                          backgroundColor: isUnlocked
+                            ? TIER_COLORS[tier]
+                            : "#E5E7EB",
+                        },
                         isCurrent && styles.tierSegmentCurrent,
                       ]}
                     />
@@ -127,13 +201,15 @@ export default function ProfileScreen() {
         </View>
 
         <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { fontSize: scale(12) }]}>ACCESSIBILITY</Text>
+          <Text style={[styles.sectionTitle, { fontSize: scale(12) }]}>
+            ACCESSIBILITY
+          </Text>
           <View style={styles.card}>
             <SettingRow
               label="Larger Text"
               description="Increase text size throughout the app"
               value={largerText}
-              onValueChange={(v) => setPreference('largerText', v)}
+              onValueChange={(v) => setPreference("largerText", v)}
               scale={scale}
               testID="toggle-larger-text-profile"
             />
@@ -141,13 +217,15 @@ export default function ProfileScreen() {
         </View>
 
         <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { fontSize: scale(12) }]}>APP SETTINGS</Text>
+          <Text style={[styles.sectionTitle, { fontSize: scale(12) }]}>
+            APP SETTINGS
+          </Text>
           <View style={styles.card}>
             <SettingRow
               label="Notifications"
               description="Receive updates about nearby deals and events"
               value={notifications}
-              onValueChange={(v) => setPreference('notifications', v)}
+              onValueChange={(v) => setPreference("notifications", v)}
               scale={scale}
             />
             <View style={styles.divider} />
@@ -155,12 +233,55 @@ export default function ProfileScreen() {
               label="Share Location"
               description="Help us find retailers near you"
               value={shareLocation}
-              onValueChange={(v) => setPreference('shareLocation', v)}
+              onValueChange={(v) => setPreference("shareLocation", v)}
               scale={scale}
             />
           </View>
         </View>
       </ScrollView>
+      <Modal
+        visible={editModalVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setEditModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={[styles.modalTitle, { fontSize: scale(18) }]}>
+              Edit Name
+            </Text>
+            <TextInput
+              value={tempName}
+              onChangeText={setTempName}
+              style={[styles.modalInput, { fontSize: scale(16) }]}
+              placeholder="Your name"
+              autoFocus
+            />
+            <View style={styles.modalButtonRow}>
+              <Pressable
+                onPress={() => setEditModalVisible(false)}
+                style={styles.modalCancelButton}
+              >
+                <Text style={{ fontSize: scale(15) }}>Cancel</Text>
+              </Pressable>
+              <Pressable
+                onPress={handleSaveName}
+                style={styles.modalSaveButton}
+              >
+                <Text
+                  style={{
+                    fontSize: scale(15),
+                    color: "#FFFFFF",
+                    fontWeight: "600",
+                  }}
+                >
+                  Save
+                </Text>
+              </Pressable>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
@@ -168,7 +289,7 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   safe: {
     flex: 1,
-    backgroundColor: '#F5F0EB',
+    backgroundColor: "#F5F0EB",
   },
   scroll: {
     paddingBottom: 48,
@@ -181,12 +302,12 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
   },
   heading: {
-    fontWeight: '700',
-    color: '#FFFFFF',
+    fontWeight: "700",
+    color: "#FFFFFF",
   },
 
   memberCard: {
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: -28,
     paddingBottom: 24,
     paddingHorizontal: 24,
@@ -196,8 +317,8 @@ const styles = StyleSheet.create({
     height: 80,
     borderRadius: 40,
     backgroundColor: BRAND,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     marginBottom: 14,
     shadowColor: BRAND,
     shadowOffset: { width: 0, height: 4 },
@@ -206,17 +327,17 @@ const styles = StyleSheet.create({
     elevation: 6,
   },
   avatarInitial: {
-    color: '#FFFFFF',
-    fontWeight: '700',
+    color: "#FFFFFF",
+    fontWeight: "700",
   },
   memberName: {
-    fontWeight: '700',
-    color: '#111827',
+    fontWeight: "700",
+    color: "#111827",
     marginBottom: 4,
   },
   memberLabel: {
-    color: '#6B7280',
-    fontWeight: '500',
+    color: "#6B7280",
+    fontWeight: "500",
   },
 
   section: {
@@ -224,32 +345,32 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   sectionTitle: {
-    fontWeight: '700',
-    color: '#6B7280',
+    fontWeight: "700",
+    color: "#6B7280",
     letterSpacing: 0.8,
     marginBottom: 10,
     marginLeft: 4,
   },
   card: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#FFFFFF",
     borderRadius: 16,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.06,
     shadowRadius: 8,
     elevation: 2,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   divider: {
     height: 1,
-    backgroundColor: '#F3F4F6',
+    backgroundColor: "#F3F4F6",
     marginHorizontal: 16,
   },
 
   settingRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     paddingHorizontal: 16,
     paddingVertical: 14,
     minHeight: 64,
@@ -259,29 +380,29 @@ const styles = StyleSheet.create({
     marginRight: 12,
   },
   settingLabel: {
-    fontWeight: '600',
-    color: '#111827',
+    fontWeight: "600",
+    color: "#111827",
     marginBottom: 2,
   },
   settingDesc: {
-    color: '#6B7280',
+    color: "#6B7280",
     lineHeight: 18,
   },
 
   rewardsSummary: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "flex-start",
+    justifyContent: "space-between",
     paddingHorizontal: 16,
     paddingTop: 16,
     paddingBottom: 12,
   },
   pointsValue: {
-    fontWeight: '700',
-    color: '#111827',
+    fontWeight: "700",
+    color: "#111827",
   },
   pointsLabel: {
-    color: '#6B7280',
+    color: "#6B7280",
     marginTop: 2,
   },
   tierBadge: {
@@ -290,50 +411,102 @@ const styles = StyleSheet.create({
     borderRadius: 999,
   },
   tierBadgeText: {
-    color: '#FFFFFF',
-    fontWeight: '700',
+    color: "#FFFFFF",
+    fontWeight: "700",
   },
   tierBarRow: {
-    flexDirection: 'row',
+    flexDirection: "row",
     paddingHorizontal: 16,
     paddingTop: 4,
   },
   tierSegmentWrap: {
     flex: 1,
-    alignItems: 'center',
+    alignItems: "center",
     marginHorizontal: 3,
   },
   tierSegment: {
     height: 8,
-    width: '100%',
+    width: "100%",
     borderRadius: 4,
   },
   tierSegmentCurrent: {
     height: 12,
     borderWidth: 2,
-    borderColor: '#FFFFFF',
-    shadowColor: '#000',
+    borderColor: "#FFFFFF",
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.2,
     shadowRadius: 2,
     elevation: 2,
   },
   tierLabel: {
-    color: '#9CA3AF',
-    fontWeight: '600',
+    color: "#9CA3AF",
+    fontWeight: "600",
     marginTop: 6,
-    textAlign: 'center',
+    textAlign: "center",
   },
   tierLabelCurrent: {
-    color: '#111827',
-    fontWeight: '700',
+    color: "#111827",
+    fontWeight: "700",
   },
   nextTierText: {
-    color: '#374151',
-    fontWeight: '600',
-    textAlign: 'center',
+    color: "#374151",
+    fontWeight: "600",
+    textAlign: "center",
     paddingHorizontal: 16,
     paddingTop: 14,
     paddingBottom: 16,
+  },
+  editButton: {
+    marginTop: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 6,
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: BRAND,
+  },
+  editButtonText: {
+    color: BRAND,
+    fontWeight: "600",
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.4)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalContent: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 16,
+    padding: 24,
+    width: "85%",
+  },
+  modalTitle: {
+    fontWeight: "700",
+    marginBottom: 16,
+    color: "#111827",
+  },
+  modalInput: {
+    borderWidth: 1,
+    borderColor: "#D1D5DB",
+    borderRadius: 10,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    marginBottom: 20,
+  },
+  modalButtonRow: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    gap: 12,
+  },
+  modalCancelButton: {
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+  },
+  modalSaveButton: {
+    backgroundColor: BRAND,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 8,
   },
 });
