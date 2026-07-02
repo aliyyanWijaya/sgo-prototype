@@ -1,8 +1,9 @@
 import { Feather } from '@expo/vector-icons';
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, Dimensions, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Dimensions, Platform, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { useUserPreferences } from '@/context/UserPreferencesContext';
 import { MemberData, formatJoinDate, loadMemberData } from '@/utils/membership';
 
 const BRAND = '#2B7A77';
@@ -12,44 +13,44 @@ const CARD_WIDTH = SCREEN_WIDTH - 40;
 
 // ─── Membership Card ──────────────────────────────────────────────────────────
 
-function MembershipCard({ data }: { data: MemberData }) {
+function MembershipCard({ data, scale }: { data: MemberData; scale: (n: number) => number }) {
   return (
     <View style={styles.card}>
-      {/* Decorative background circles for physical-card feel */}
       <View style={styles.decorCircleLarge} />
       <View style={styles.decorCircleSmall} />
 
-      {/* Top row: brand name + offline badge */}
       <View style={styles.cardTopRow}>
-        <Text style={styles.cardBrand}>SavGoSpend</Text>
+        <Text style={[styles.cardBrand, { fontSize: scale(16) }]}>SavGoSpend</Text>
         <View style={styles.offlineBadge}>
           <Feather name="wifi-off" size={11} color="#FFFFFF" />
-          <Text style={styles.offlineBadgeText}>Available Offline</Text>
+          <Text style={[styles.offlineBadgeText, { fontSize: scale(11) }]}>Available Offline</Text>
         </View>
       </View>
 
-      {/* Member name + number — large for low-vision readability */}
       <View style={styles.cardMiddle}>
-        <Text style={styles.cardName} numberOfLines={2} adjustsFontSizeToFit>
+        <Text style={[styles.cardName, { fontSize: scale(28) }]} numberOfLines={2} adjustsFontSizeToFit>
           {data.name}
         </Text>
-        <Text style={styles.cardNumber} accessibilityLabel={`Member number ${data.memberNumber.split('').join(' ')}`}>
+        <Text
+          style={[styles.cardNumber, { fontSize: scale(20) }]}
+          accessibilityLabel={`Member number ${data.memberNumber.split('').join(' ')}`}>
           {data.memberNumber}
         </Text>
       </View>
 
-      {/* Bottom row: tier + join date */}
       <View style={styles.cardBottomRow}>
         <View>
           <View style={styles.tierBadge}>
-            <Text style={styles.tierBadgeText}>{data.tier.toUpperCase()} MEMBER</Text>
+            <Text style={[styles.tierBadgeText, { fontSize: scale(11) }]}>
+              {data.tier.toUpperCase()} MEMBER
+            </Text>
           </View>
-          <Text style={styles.joinDate}>
+          <Text style={[styles.joinDate, { fontSize: scale(12) }]}>
             Member since {formatJoinDate(data.joinDate)}
           </Text>
         </View>
         <View style={styles.sgoMark}>
-          <Text style={styles.sgoMarkText}>SGO</Text>
+          <Text style={[styles.sgoMarkText, { fontSize: scale(12) }]}>SGO</Text>
         </View>
       </View>
     </View>
@@ -58,14 +59,14 @@ function MembershipCard({ data }: { data: MemberData }) {
 
 // ─── Fallback (no data) ───────────────────────────────────────────────────────
 
-function NoDataCard() {
+function NoDataCard({ scale }: { scale: (n: number) => number }) {
   return (
     <View style={styles.noDataCard}>
       <View style={styles.noDataIconWrap}>
         <Feather name="credit-card" size={40} color="#9CA3AF" />
       </View>
-      <Text style={styles.noDataTitle}>No membership card yet</Text>
-      <Text style={styles.noDataBody}>
+      <Text style={[styles.noDataTitle, { fontSize: scale(20) }]}>No membership card yet</Text>
+      <Text style={[styles.noDataBody, { fontSize: scale(15) }]}>
         Complete the welcome setup to generate your membership card.
       </Text>
     </View>
@@ -77,6 +78,7 @@ function NoDataCard() {
 export default function CardScreen() {
   const [memberData, setMemberData] = useState<MemberData | null>(null);
   const [loading, setLoading] = useState(true);
+  const { scale } = useUserPreferences();
 
   useEffect(() => {
     loadMemberData().then((data) => {
@@ -88,8 +90,10 @@ export default function CardScreen() {
   return (
     <SafeAreaView style={styles.safe}>
       <View style={styles.container}>
-        <Text style={styles.screenTitle}>Membership Card</Text>
-        <Text style={styles.screenSubtitle}>Your identity as an SGO member</Text>
+        <Text style={[styles.screenTitle, { fontSize: scale(26) }]}>Membership Card</Text>
+        <Text style={[styles.screenSubtitle, { fontSize: scale(15) }]}>
+          Your identity as an SGO member
+        </Text>
 
         {loading ? (
           <View style={styles.loadingWrap}>
@@ -97,16 +101,16 @@ export default function CardScreen() {
           </View>
         ) : memberData ? (
           <>
-            <MembershipCard data={memberData} />
+            <MembershipCard data={memberData} scale={scale} />
             <View style={styles.infoRow}>
               <Feather name="shield" size={16} color={BRAND} />
-              <Text style={styles.infoText}>
+              <Text style={[styles.infoText, { fontSize: scale(14) }]}>
                 This card works without internet. Show it at any participating retailer.
               </Text>
             </View>
           </>
         ) : (
-          <NoDataCard />
+          <NoDataCard scale={scale} />
         )}
       </View>
     </SafeAreaView>
@@ -126,20 +130,16 @@ const styles = StyleSheet.create({
     paddingTop: 28,
   },
 
-  // Screen header
   screenTitle: {
-    fontSize: 26,
     fontWeight: '700',
     color: '#111827',
     marginBottom: 4,
   },
   screenSubtitle: {
-    fontSize: 15,
     color: '#6B7280',
     marginBottom: 28,
   },
 
-  // The physical card
   card: {
     width: CARD_WIDTH,
     backgroundColor: CARD_BG,
@@ -155,7 +155,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
 
-  // Decorative circles
   decorCircleLarge: {
     position: 'absolute',
     width: 220,
@@ -175,7 +174,6 @@ const styles = StyleSheet.create({
     left: -20,
   },
 
-  // Card sections
   cardTopRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -183,13 +181,11 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   cardBrand: {
-    fontSize: 16,
     fontWeight: '700',
     color: 'rgba(255,255,255,0.9)',
     letterSpacing: 0.3,
   },
 
-  // Available Offline badge
   offlineBadge: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -201,32 +197,27 @@ const styles = StyleSheet.create({
   },
   offlineBadgeText: {
     color: '#FFFFFF',
-    fontSize: 11,
     fontWeight: '600',
   },
 
-  // Member name and number
   cardMiddle: {
     flex: 1,
     justifyContent: 'center',
     marginBottom: 20,
   },
   cardName: {
-    fontSize: 28,
     fontWeight: '800',
     color: '#FFFFFF',
     letterSpacing: 0.2,
     marginBottom: 8,
   },
   cardNumber: {
-    fontSize: 20,
     fontWeight: '600',
     color: 'rgba(255,255,255,0.85)',
     letterSpacing: 3,
     fontFamily: Platform.select({ ios: 'Menlo', android: 'monospace', default: 'monospace' }),
   },
 
-  // Tier + join date
   cardBottomRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -242,12 +233,10 @@ const styles = StyleSheet.create({
   },
   tierBadgeText: {
     color: '#FFFFFF',
-    fontSize: 11,
     fontWeight: '700',
     letterSpacing: 1,
   },
   joinDate: {
-    fontSize: 12,
     color: 'rgba(255,255,255,0.7)',
     fontWeight: '500',
   },
@@ -262,12 +251,10 @@ const styles = StyleSheet.create({
   },
   sgoMarkText: {
     color: 'rgba(255,255,255,0.7)',
-    fontSize: 12,
     fontWeight: '800',
     letterSpacing: 1,
   },
 
-  // Info strip below card
   infoRow: {
     flexDirection: 'row',
     alignItems: 'flex-start',
@@ -279,19 +266,16 @@ const styles = StyleSheet.create({
   },
   infoText: {
     flex: 1,
-    fontSize: 14,
     color: '#374151',
     lineHeight: 20,
   },
 
-  // Loading
   loadingWrap: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
 
-  // No data fallback
   noDataCard: {
     alignItems: 'center',
     paddingTop: 48,
@@ -307,14 +291,12 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   noDataTitle: {
-    fontSize: 20,
     fontWeight: '700',
     color: '#111827',
     marginBottom: 10,
     textAlign: 'center',
   },
   noDataBody: {
-    fontSize: 15,
     color: '#6B7280',
     textAlign: 'center',
     lineHeight: 22,

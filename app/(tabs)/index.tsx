@@ -15,7 +15,7 @@ type Tile = {
 };
 
 export default function HomeScreen() {
-  const { memberName } = useUserPreferences();
+  const { memberName, scale } = useUserPreferences();
   const displayName = memberName || 'Traveller';
 
   const tiles: Tile[] = [
@@ -51,9 +51,9 @@ export default function HomeScreen() {
         contentContainerStyle={styles.scroll}
         showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
-          <Text style={styles.greeting}>Welcome back,</Text>
-          <Text style={styles.name}>{displayName}</Text>
-          <Text style={styles.subtitle}>Ready to explore?</Text>
+          <Text style={[styles.greeting, { fontSize: scale(18) }]}>Welcome back,</Text>
+          <Text style={[styles.name, { fontSize: scale(30) }]}>{displayName}</Text>
+          <Text style={[styles.subtitle, { fontSize: scale(16) }]}>Ready to explore?</Text>
         </View>
 
         <View style={styles.tilesContainer}>
@@ -69,8 +69,8 @@ export default function HomeScreen() {
                 <Feather name={tile.icon} size={26} color="#FFFFFF" />
               </View>
               <View style={styles.tileText}>
-                <Text style={styles.tileTitle}>{tile.title}</Text>
-                <Text style={styles.tileDescription}>{tile.description}</Text>
+                <Text style={[styles.tileTitle, { fontSize: scale(19) }]}>{tile.title}</Text>
+                <Text style={[styles.tileDescription, { fontSize: scale(14) }]}>{tile.description}</Text>
               </View>
               <Feather name="chevron-right" size={22} color="#9CA3AF" />
             </Pressable>
@@ -86,7 +86,7 @@ export default function HomeScreen() {
         accessibilityLabel="Ask Aroha for help"
         accessibilityHint="Opens Aroha, your SGO travel companion">
         <Feather name="message-circle" size={26} color="#FFFFFF" />
-        <Text style={styles.fabLabel}>Aroha</Text>
+        <Text style={[styles.fabLabel, { fontSize: scale(16) }]}>Aroha</Text>
       </Pressable>
     </SafeAreaView>
   );

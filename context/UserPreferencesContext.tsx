@@ -22,7 +22,7 @@ interface UserPreferencesContextValue extends UserPreferences {
     key: K,
     value: UserPreferences[K]
   ) => Promise<void>;
-  // Returns a font size scaled up by 20% when largerText is enabled
+  // Returns a font size scaled up by 30% when largerText is enabled
   scale: (base: number) => number;
 }
 
@@ -73,7 +73,7 @@ export function UserPreferencesProvider({ children }: { children: React.ReactNod
   }, []);
 
   const scale = useCallback(
-    (base: number) => (prefs.largerText ? Math.round(base * 1.2) : base),
+    (base: number) => (prefs.largerText ? Math.round(base * 1.3) : base),
     [prefs.largerText]
   );
 
