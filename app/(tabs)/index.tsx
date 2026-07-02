@@ -77,6 +77,17 @@ export default function HomeScreen() {
           ))}
         </View>
       </ScrollView>
+
+      {/* Floating action button — opens Aroha chat */}
+      <Pressable
+        style={({ pressed }) => [styles.fab, pressed && styles.fabPressed]}
+        onPress={() => router.push('/aroha')}
+        accessibilityRole="button"
+        accessibilityLabel="Ask Aroha for help"
+        accessibilityHint="Opens Aroha, your SGO travel companion">
+        <Feather name="message-circle" size={26} color="#FFFFFF" />
+        <Text style={styles.fabLabel}>Aroha</Text>
+      </Pressable>
     </SafeAreaView>
   );
 }
@@ -156,5 +167,34 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#374151',
     lineHeight: 20,
+  },
+
+  // Aroha FAB
+  fab: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    backgroundColor: '#1D6863',
+    borderRadius: 30,
+    paddingVertical: 14,
+    paddingHorizontal: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.22,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  fabPressed: {
+    opacity: 0.88,
+    transform: [{ scale: 0.96 }],
+  },
+  fabLabel: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '700',
+    letterSpacing: 0.3,
   },
 });

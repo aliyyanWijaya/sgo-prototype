@@ -52,6 +52,15 @@ export default function RootLayout() {
           <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
           <Stack.Screen name="whats-on" options={{ title: "What's On" }} />
           <Stack.Screen name="good-to-know" options={{ title: 'Good to Know' }} />
+          <Stack.Screen
+            name="aroha"
+            options={{
+              title: 'Aroha',
+              headerStyle: { backgroundColor: '#2B7A77' },
+              headerTintColor: '#FFFFFF',
+              headerTitleStyle: { fontWeight: '700', fontSize: 18 },
+            }}
+          />
         </Stack>
         <OnboardingGuard />
         <StatusBar style="auto" />
