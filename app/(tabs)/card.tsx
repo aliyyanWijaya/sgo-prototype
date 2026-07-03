@@ -1,39 +1,58 @@
-import { Feather } from '@expo/vector-icons';
-import { useEffect, useState } from 'react';
-import { ActivityIndicator, Dimensions, Platform, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Feather } from "@expo/vector-icons";
+import { useEffect, useState } from "react";
+import {
+  ActivityIndicator,
+  Platform,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-import { useUserPreferences } from '@/context/UserPreferencesContext';
-import { MemberData, formatJoinDate, loadMemberData } from '@/utils/membership';
+import { useUserPreferences } from "@/context/UserPreferencesContext";
+import { formatJoinDate, loadMemberData, MemberData } from "@/utils/membership";
 
-const BRAND = '#2B7A77';
-const CARD_BG = '#1D6863';
-const SCREEN_WIDTH = Dimensions.get('window').width;
-const CARD_WIDTH = SCREEN_WIDTH - 40;
+const BRAND = "#2B7A77";
+const CARD_BG = "#1D6863";
 
 // ─── Membership Card ──────────────────────────────────────────────────────────
 
-function MembershipCard({ data, scale }: { data: MemberData; scale: (n: number) => number }) {
+function MembershipCard({
+  data,
+  scale,
+}: {
+  data: MemberData;
+  scale: (n: number) => number;
+}) {
   return (
     <View style={styles.card}>
       <View style={styles.decorCircleLarge} />
       <View style={styles.decorCircleSmall} />
 
       <View style={styles.cardTopRow}>
-        <Text style={[styles.cardBrand, { fontSize: scale(16) }]}>SavGoSpend</Text>
+        <Text style={[styles.cardBrand, { fontSize: scale(16) }]}>
+          SavGoSpend
+        </Text>
         <View style={styles.offlineBadge}>
           <Feather name="wifi-off" size={11} color="#FFFFFF" />
-          <Text style={[styles.offlineBadgeText, { fontSize: scale(11) }]}>Available Offline</Text>
+          <Text style={[styles.offlineBadgeText, { fontSize: scale(11) }]}>
+            Available Offline
+          </Text>
         </View>
       </View>
 
       <View style={styles.cardMiddle}>
-        <Text style={[styles.cardName, { fontSize: scale(28) }]} numberOfLines={2} adjustsFontSizeToFit>
+        <Text
+          style={[styles.cardName, { fontSize: scale(28) }]}
+          numberOfLines={2}
+          adjustsFontSizeToFit
+        >
           {data.name}
         </Text>
         <Text
           style={[styles.cardNumber, { fontSize: scale(20) }]}
-          accessibilityLabel={`Member number ${data.memberNumber.split('').join(' ')}`}>
+          accessibilityLabel={`Member number ${data.memberNumber.split("").join(" ")}`}
+        >
           {data.memberNumber}
         </Text>
       </View>
@@ -65,7 +84,9 @@ function NoDataCard({ scale }: { scale: (n: number) => number }) {
       <View style={styles.noDataIconWrap}>
         <Feather name="credit-card" size={40} color="#9CA3AF" />
       </View>
-      <Text style={[styles.noDataTitle, { fontSize: scale(20) }]}>No membership card yet</Text>
+      <Text style={[styles.noDataTitle, { fontSize: scale(20) }]}>
+        No membership card yet
+      </Text>
       <Text style={[styles.noDataBody, { fontSize: scale(15) }]}>
         Complete the welcome setup to generate your membership card.
       </Text>
@@ -90,7 +111,9 @@ export default function CardScreen() {
   return (
     <SafeAreaView style={styles.safe}>
       <View style={styles.container}>
-        <Text style={[styles.screenTitle, { fontSize: scale(26) }]}>Membership Card</Text>
+        <Text style={[styles.screenTitle, { fontSize: scale(26) }]}>
+          Membership Card
+        </Text>
         <Text style={[styles.screenSubtitle, { fontSize: scale(15) }]}>
           Your identity as an SGO member
         </Text>
@@ -105,7 +128,8 @@ export default function CardScreen() {
             <View style={styles.infoRow}>
               <Feather name="shield" size={16} color={BRAND} />
               <Text style={[styles.infoText, { fontSize: scale(14) }]}>
-                This card works without internet. Show it at any participating retailer.
+                This card works without internet. Show it at any participating
+                retailer.
               </Text>
             </View>
           </>
@@ -122,7 +146,7 @@ export default function CardScreen() {
 const styles = StyleSheet.create({
   safe: {
     flex: 1,
-    backgroundColor: '#F5F0EB',
+    backgroundColor: "#F5F0EB",
   },
   container: {
     flex: 1,
@@ -131,17 +155,19 @@ const styles = StyleSheet.create({
   },
 
   screenTitle: {
-    fontWeight: '700',
-    color: '#111827',
+    fontWeight: "700",
+    color: "#111827",
     marginBottom: 4,
   },
   screenSubtitle: {
-    color: '#6B7280',
+    color: "#6B7280",
     marginBottom: 28,
   },
 
   card: {
-    width: CARD_WIDTH,
+    width: "100%",
+    maxWidth: 480,
+    alignSelf: "center",
     backgroundColor: CARD_BG,
     borderRadius: 24,
     padding: 28,
@@ -151,133 +177,137 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.45,
     shadowRadius: 16,
     elevation: 10,
-    overflow: 'hidden',
-    justifyContent: 'space-between',
+    overflow: "hidden",
+    justifyContent: "space-between",
   },
 
   decorCircleLarge: {
-    position: 'absolute',
+    position: "absolute",
     width: 220,
     height: 220,
     borderRadius: 110,
-    backgroundColor: 'rgba(255,255,255,0.05)',
+    backgroundColor: "rgba(255,255,255,0.05)",
     bottom: -60,
     right: -60,
   },
   decorCircleSmall: {
-    position: 'absolute',
+    position: "absolute",
     width: 100,
     height: 100,
     borderRadius: 50,
-    backgroundColor: 'rgba(255,255,255,0.07)',
+    backgroundColor: "rgba(255,255,255,0.07)",
     top: -30,
     left: -20,
   },
 
   cardTopRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 20,
   },
   cardBrand: {
-    fontWeight: '700',
-    color: 'rgba(255,255,255,0.9)',
+    fontWeight: "700",
+    color: "rgba(255,255,255,0.9)",
     letterSpacing: 0.3,
   },
 
   offlineBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 4,
-    backgroundColor: 'rgba(255,255,255,0.15)',
+    backgroundColor: "rgba(255,255,255,0.15)",
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 20,
   },
   offlineBadgeText: {
-    color: '#FFFFFF',
-    fontWeight: '600',
+    color: "#FFFFFF",
+    fontWeight: "600",
   },
 
   cardMiddle: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: "center",
     marginBottom: 20,
   },
   cardName: {
-    fontWeight: '800',
-    color: '#FFFFFF',
+    fontWeight: "800",
+    color: "#FFFFFF",
     letterSpacing: 0.2,
     marginBottom: 8,
   },
   cardNumber: {
-    fontWeight: '600',
-    color: 'rgba(255,255,255,0.85)',
+    fontWeight: "600",
+    color: "rgba(255,255,255,0.85)",
     letterSpacing: 3,
-    fontFamily: Platform.select({ ios: 'Menlo', android: 'monospace', default: 'monospace' }),
+    fontFamily: Platform.select({
+      ios: "Menlo",
+      android: "monospace",
+      default: "monospace",
+    }),
   },
 
   cardBottomRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-end',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-end",
   },
   tierBadge: {
-    backgroundColor: 'rgba(217, 119, 6, 0.85)',
+    backgroundColor: "rgba(217, 119, 6, 0.85)",
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 20,
-    alignSelf: 'flex-start',
+    alignSelf: "flex-start",
     marginBottom: 6,
   },
   tierBadgeText: {
-    color: '#FFFFFF',
-    fontWeight: '700',
+    color: "#FFFFFF",
+    fontWeight: "700",
     letterSpacing: 1,
   },
   joinDate: {
-    color: 'rgba(255,255,255,0.7)',
-    fontWeight: '500',
+    color: "rgba(255,255,255,0.7)",
+    fontWeight: "500",
   },
   sgoMark: {
     width: 44,
     height: 44,
     borderRadius: 22,
     borderWidth: 2,
-    borderColor: 'rgba(255,255,255,0.3)',
-    alignItems: 'center',
-    justifyContent: 'center',
+    borderColor: "rgba(255,255,255,0.3)",
+    alignItems: "center",
+    justifyContent: "center",
   },
   sgoMarkText: {
-    color: 'rgba(255,255,255,0.7)',
-    fontWeight: '800',
+    color: "rgba(255,255,255,0.7)",
+    fontWeight: "800",
     letterSpacing: 1,
   },
 
   infoRow: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
+    flexDirection: "row",
+    alignItems: "flex-start",
     gap: 10,
     marginTop: 24,
-    backgroundColor: 'rgba(43, 122, 119, 0.08)',
+    backgroundColor: "rgba(43, 122, 119, 0.08)",
     borderRadius: 12,
     padding: 14,
   },
   infoText: {
     flex: 1,
-    color: '#374151',
+    color: "#374151",
     lineHeight: 20,
   },
 
   loadingWrap: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
 
   noDataCard: {
-    alignItems: 'center',
+    alignItems: "center",
     paddingTop: 48,
     paddingHorizontal: 24,
   },
@@ -285,20 +315,20 @@ const styles = StyleSheet.create({
     width: 88,
     height: 88,
     borderRadius: 44,
-    backgroundColor: '#F3F4F6',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#F3F4F6",
+    alignItems: "center",
+    justifyContent: "center",
     marginBottom: 20,
   },
   noDataTitle: {
-    fontWeight: '700',
-    color: '#111827',
+    fontWeight: "700",
+    color: "#111827",
     marginBottom: 10,
-    textAlign: 'center',
+    textAlign: "center",
   },
   noDataBody: {
-    color: '#6B7280',
-    textAlign: 'center',
+    color: "#6B7280",
+    textAlign: "center",
     lineHeight: 22,
   },
 });
