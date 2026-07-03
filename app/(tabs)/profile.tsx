@@ -87,7 +87,7 @@ export default function ProfileScreen() {
   const [tempName, setTempName] = useState(displayName);
 
   const openEditModal = () => {
-    setTempName(displayName); // reset ke value sekarang tiap dibuka
+    setTempName(displayName);
     setEditModalVisible(true);
   };
 
