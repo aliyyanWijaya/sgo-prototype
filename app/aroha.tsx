@@ -10,11 +10,10 @@ import {
   Pressable,
   ScrollView,
   StyleSheet,
-  Text,
-  TextInput,
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import AppText from "../components/AppText";
 
 import { useUserPreferences } from "@/context/UserPreferencesContext";
 
@@ -82,31 +81,31 @@ function PronunciationModal({ onDismiss }: { onDismiss: () => void }) {
       onStartShouldSetResponder={() => true}
     >
       {/* Title */}
-      <Text style={modalStyles.title}>Meet Aroha</Text>
+      <AppText style={modalStyles.title}>Meet Aroha</AppText>
 
       {/* Avatar + name */}
       <View style={modalStyles.nameRow}>
         <View style={modalStyles.bigAvatar}>
-          <Text style={modalStyles.bigAvatarLetter}>A</Text>
+          <AppText style={modalStyles.bigAvatarLetter}>A</AppText>
         </View>
         <View style={modalStyles.nameBlock}>
-          <Text style={modalStyles.arohaName}>Aroha</Text>
+          <AppText style={modalStyles.arohaName}>Aroha</AppText>
           {/* Phonetic with stress on middle syllable highlighted */}
-          <Text testID="aroha-phonetic" style={modalStyles.phonetic}>
+          <AppText testID="aroha-phonetic" style={modalStyles.phonetic}>
             {"ah-"}
-            <Text style={modalStyles.phoneticStress}>ROH</Text>
+            <AppText style={modalStyles.phoneticStress}>ROH</AppText>
             {"-hah"}
-          </Text>
+          </AppText>
         </View>
       </View>
 
       {/* Description */}
-      <Text style={modalStyles.description}>
-        <Text style={modalStyles.descriptionBold}>Aroha</Text>
+      <AppText style={modalStyles.description}>
+        <AppText style={modalStyles.descriptionBold}>Aroha</AppText>
         {" is a Māori word meaning love and compassion.\n\n"}
         She is your friendly SGO companion — here to help you explore, save, and
         travel with confidence. Ask her anything, any time.
-      </Text>
+      </AppText>
 
       {/* Audio pronunciation button */}
       <Pressable
@@ -124,13 +123,13 @@ function PronunciationModal({ onDismiss }: { onDismiss: () => void }) {
           size={20}
           color={BRAND}
         />
-        <Text style={modalStyles.audioBtnText}>
+        <AppText style={modalStyles.audioBtnText}>
           {isPlaying ? "Playing…" : "Hear the pronunciation"}
-        </Text>
+        </AppText>
       </Pressable>
 
       {audioNote !== null && (
-        <Text style={modalStyles.audioNote}>{audioNote}</Text>
+        <AppText style={modalStyles.audioNote}>{audioNote}</AppText>
       )}
 
       {/* Dismiss button */}
@@ -144,7 +143,7 @@ function PronunciationModal({ onDismiss }: { onDismiss: () => void }) {
         accessibilityRole="button"
         accessibilityLabel="Got it, I understand how to pronounce Aroha"
       >
-        <Text style={modalStyles.gotItText}>Got it!</Text>
+        <AppText style={modalStyles.gotItText}>Got it!</AppText>
       </Pressable>
     </View>
   );
@@ -155,7 +154,7 @@ function PronunciationModal({ onDismiss }: { onDismiss: () => void }) {
 function ArohaAvatar() {
   return (
     <View style={styles.avatar}>
-      <Text style={styles.avatarText}>A</Text>
+      <AppText style={styles.avatarText}>A</AppText>
     </View>
   );
 }
@@ -174,7 +173,7 @@ function MessageBubble({
       <View
         style={[styles.bubble, isUser ? styles.bubbleUser : styles.bubbleAroha]}
       >
-        <Text
+        <AppText
           style={[
             styles.bubbleText,
             isUser ? styles.textUser : styles.textAroha,
@@ -182,7 +181,7 @@ function MessageBubble({
           ]}
         >
           {message.content}
-        </Text>
+        </AppText>
       </View>
     </View>
   );
@@ -194,7 +193,7 @@ function TypingIndicator() {
       <ArohaAvatar />
       <View style={[styles.bubble, styles.bubbleAroha, styles.typingBubble]}>
         <ActivityIndicator size="small" color={BRAND} />
-        <Text style={styles.typingText}>Aroha is thinking…</Text>
+        <AppText style={styles.typingText}>Aroha is thinking…</AppText>
       </View>
     </View>
   );
@@ -210,7 +209,7 @@ function ErrorBanner({
   return (
     <View style={styles.errorBanner}>
       <Feather name="alert-circle" size={18} color="#B45309" />
-      <Text style={[styles.errorText, { fontSize }]}>{message}</Text>
+      <AppText style={[styles.errorText, { fontSize }]}>{message}</AppText>
     </View>
   );
 }
@@ -342,7 +341,7 @@ export default function ArohaScreen() {
         </ScrollView>
 
         <View style={styles.inputBar}>
-          <TextInput
+          <AppTextInput
             style={[styles.textInput, { fontSize: scale(16) }]}
             value={input}
             onChangeText={setInput}

@@ -11,6 +11,7 @@ import "react-native-reanimated";
 import { OnboardingProvider, useOnboarding } from "@/context/OnboardingContext";
 import { UserPreferencesProvider } from "@/context/UserPreferencesContext";
 import { useColorScheme } from "@/hooks/use-color-scheme";
+import { AccessibilityProvider } from "../context/AccessibilityContext";
 
 export const unstable_settings = {
   anchor: "(tabs)",
@@ -37,33 +38,38 @@ function OnboardingGuard() {
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   return (
-    <OnboardingProvider>
-      <UserPreferencesProvider>
-        <ThemeProvider
-          value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
-        >
-          <Stack>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="onboarding" options={{ headerShown: false }} />
-            <Stack.Screen
-              name="modal"
-              options={{ presentation: "modal", title: "Modal" }}
-            />
+    <AccessibilityProvider>
+      <OnboardingProvider>
+        <UserPreferencesProvider>
+          <ThemeProvider
+            value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+          >
+            <Stack>
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen
+                name="onboarding"
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="modal"
+                options={{ presentation: "modal", title: "Modal" }}
+              />
 
-            <Stack.Screen
-              name="aroha"
-              options={{
-                title: "Aroha",
-                headerStyle: { backgroundColor: "#2B7A77" },
-                headerTintColor: "#FFFFFF",
-                headerTitleStyle: { fontWeight: "700", fontSize: 18 },
-              }}
-            />
-          </Stack>
-          <OnboardingGuard />
-          <StatusBar style="auto" />
-        </ThemeProvider>
-      </UserPreferencesProvider>
-    </OnboardingProvider>
+              <Stack.Screen
+                name="aroha"
+                options={{
+                  title: "Aroha",
+                  headerStyle: { backgroundColor: "#2B7A77" },
+                  headerTintColor: "#FFFFFF",
+                  headerTitleStyle: { fontWeight: "700", fontSize: 18 },
+                }}
+              />
+            </Stack>
+            <OnboardingGuard />
+            <StatusBar style="auto" />
+          </ThemeProvider>
+        </UserPreferencesProvider>
+      </OnboardingProvider>
+    </AccessibilityProvider>
   );
 }

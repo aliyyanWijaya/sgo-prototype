@@ -1,3 +1,5 @@
+import AppText from "@/components/AppText";
+import { useUserPreferences } from "@/context/UserPreferencesContext";
 import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useMemo, useState } from "react";
@@ -6,12 +8,9 @@ import {
   Pressable,
   ScrollView,
   StyleSheet,
-  Text,
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-
-import { useUserPreferences } from "@/context/UserPreferencesContext";
 
 const BRAND = "#2B7A77";
 
@@ -105,15 +104,17 @@ function TipCard({ tip, scale }: { tip: Tip; scale: (n: number) => number }) {
       <View style={styles.cardTopRow}>
         <View style={[styles.categoryBadge, { backgroundColor: meta.color }]}>
           <Feather name={meta.icon} size={14} color="#FFFFFF" />
-          <Text style={[styles.categoryBadgeText, { fontSize: scale(12) }]}>
+          <AppText style={[styles.categoryBadgeText, { fontSize: scale(12) }]}>
             {meta.label}
-          </Text>
+          </AppText>
         </View>
       </View>
-      <Text style={[styles.tipTitle, { fontSize: scale(18) }]}>
+      <AppText style={[styles.tipTitle, { fontSize: scale(18) }]}>
         {tip.title}
-      </Text>
-      <Text style={[styles.tipBody, { fontSize: scale(14) }]}>{tip.body}</Text>
+      </AppText>
+      <AppText style={[styles.tipBody, { fontSize: scale(14) }]}>
+        {tip.body}
+      </AppText>
     </View>
   );
 }
@@ -147,14 +148,14 @@ function FilterChip({
       accessibilityState={{ selected: active }}
     >
       <Feather name={icon} size={14} color={active ? "#FFFFFF" : color} />
-      <Text
+      <AppText
         style={[
           styles.chipText,
           { fontSize: scale(13), color: active ? "#FFFFFF" : "#374151" },
         ]}
       >
         {label}
-      </Text>
+      </AppText>
     </Pressable>
   );
 }
@@ -171,12 +172,12 @@ export default function GoodToKnowScreen() {
   return (
     <SafeAreaView style={styles.safe} edges={["bottom"]}>
       <View style={styles.header}>
-        <Text style={[styles.label, { fontSize: scale(24) }]}>
+        <AppText style={[styles.label, { fontSize: scale(24) }]}>
           Good to Know
-        </Text>
-        <Text style={[styles.sub, { fontSize: scale(15) }]}>
+        </AppText>
+        <AppText style={[styles.sub, { fontSize: scale(15) }]}>
           Helpful tips for getting the most out of SGO
-        </Text>
+        </AppText>
       </View>
 
       <ScrollView
@@ -209,26 +210,26 @@ export default function GoodToKnowScreen() {
         ) : (
           <View style={styles.emptyState}>
             <Feather name="search" size={32} color="#9CA3AF" />
-            <Text style={[styles.emptyStateText, { fontSize: scale(15) }]}>
+            <AppText style={[styles.emptyStateText, { fontSize: scale(15) }]}>
               No tips in this category yet.
-            </Text>
+            </AppText>
           </View>
         )}
 
         <View style={styles.footerNote}>
           <Feather name="heart" size={16} color={BRAND} />
-          <Text style={[styles.footerNoteText, { fontSize: scale(13) }]}>
+          <AppText style={[styles.footerNoteText, { fontSize: scale(13) }]}>
             {"Have a question that's not answered here? "}
-            <Text
+            <AppText
               style={styles.footerNoteLink}
               onPress={() => router.push("/aroha")}
               accessibilityRole="link"
               accessibilityLabel="Ask Aroha"
             >
               Ask Aroha
-            </Text>
+            </AppText>
             {", or reach out to the SGO team anytime."}
-          </Text>
+          </AppText>
         </View>
       </ScrollView>
     </SafeAreaView>

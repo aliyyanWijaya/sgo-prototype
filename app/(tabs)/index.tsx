@@ -1,3 +1,4 @@
+import AppText from "@/components/AppText";
 import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
 import {
@@ -6,7 +7,6 @@ import {
   Pressable,
   ScrollView,
   StyleSheet,
-  Text,
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -90,7 +90,9 @@ export default function HomeScreen() {
   return (
     <SafeAreaView style={styles.safe}>
       <View style={styles.topBar}>
-        <Text style={[styles.logoText, { fontSize: scale(20) }]}>SGO</Text>
+        <AppText style={[styles.logoText, { fontSize: scale(20) }]}>
+          SGO
+        </AppText>
         <Pressable
           style={({ pressed }) => [
             styles.sosButton,
@@ -102,7 +104,9 @@ export default function HomeScreen() {
           accessibilityHint="Shows options to call for emergency help"
         >
           <Feather name="alert-circle" size={20} color="#FFFFFF" />
-          <Text style={[styles.sosLabel, { fontSize: scale(15) }]}>SOS</Text>
+          <AppText style={[styles.sosLabel, { fontSize: scale(15) }]}>
+            SOS
+          </AppText>
         </Pressable>
       </View>
 
@@ -111,15 +115,15 @@ export default function HomeScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.header}>
-          <Text style={[styles.greeting, { fontSize: scale(18) }]}>
+          <AppText style={[styles.greeting, { fontSize: scale(18) }]}>
             Welcome back,
-          </Text>
-          <Text style={[styles.name, { fontSize: scale(30) }]}>
+          </AppText>
+          <AppText style={[styles.name, { fontSize: scale(30) }]}>
             {displayName}
-          </Text>
-          <Text style={[styles.subtitle, { fontSize: scale(16) }]}>
+          </AppText>
+          <AppText style={[styles.subtitle, { fontSize: scale(16) }]}>
             Ready to explore?
-          </Text>
+          </AppText>
         </View>
 
         <View style={styles.tilesContainer}>
@@ -141,12 +145,14 @@ export default function HomeScreen() {
                 <Feather name={tile.icon} size={26} color="#FFFFFF" />
               </View>
               <View style={styles.tileText}>
-                <Text style={[styles.tileTitle, { fontSize: scale(19) }]}>
+                <AppText style={[styles.tileTitle, { fontSize: scale(19) }]}>
                   {tile.title}
-                </Text>
-                <Text style={[styles.tileDescription, { fontSize: scale(14) }]}>
+                </AppText>
+                <AppText
+                  style={[styles.tileDescription, { fontSize: scale(14) }]}
+                >
                   {tile.description}
-                </Text>
+                </AppText>
               </View>
               <Feather name="chevron-right" size={22} color="#9CA3AF" />
             </Pressable>
@@ -163,7 +169,9 @@ export default function HomeScreen() {
         accessibilityHint="Opens Aroha, your SGO travel companion"
       >
         <Feather name="message-circle" size={26} color="#FFFFFF" />
-        <Text style={[styles.fabLabel, { fontSize: scale(16) }]}>Aroha</Text>
+        <AppText style={[styles.fabLabel, { fontSize: scale(16) }]}>
+          Aroha
+        </AppText>
       </Pressable>
     </SafeAreaView>
   );

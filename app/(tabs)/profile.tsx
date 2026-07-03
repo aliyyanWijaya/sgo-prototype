@@ -1,19 +1,5 @@
+import AppText from "@/components/AppText";
 import { useOnboarding } from "@/context/OnboardingContext";
-import { useState } from "react";
-import {
-  Alert,
-  Modal,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Switch,
-  Text,
-  TextInput,
-  View,
-} from "react-native";
-import { Pressable } from "react-native-gesture-handler";
-import { SafeAreaView } from "react-native-safe-area-context";
-
 import { useUserPreferences } from "@/context/UserPreferencesContext";
 import {
   getCurrentTier,
@@ -23,6 +9,18 @@ import {
   REWARD_TIERS,
   TIER_COLORS,
 } from "@/data/rewards";
+import { useState } from "react";
+import {
+  Alert,
+  Modal,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Switch,
+  View,
+} from "react-native";
+import { Pressable } from "react-native-gesture-handler";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import { MEMBER_DATA_KEY } from "@/utils/membership";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -90,12 +88,12 @@ function SettingRow({
   return (
     <View style={styles.settingRow}>
       <View style={styles.settingInfo}>
-        <Text style={[styles.settingLabel, { fontSize: scale(17) }]}>
+        <AppText style={[styles.settingLabel, { fontSize: scale(17) }]}>
           {label}
-        </Text>
-        <Text style={[styles.settingDesc, { fontSize: scale(14) }]}>
+        </AppText>
+        <AppText style={[styles.settingDesc, { fontSize: scale(14) }]}>
           {description}
-        </Text>
+        </AppText>
       </View>
       <Switch
         testID={testID}
@@ -175,26 +173,28 @@ export default function ProfileScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.header}>
-          <Text style={[styles.heading, { fontSize: scale(26) }]}>Profile</Text>
+          <AppText style={[styles.heading, { fontSize: scale(26) }]}>
+            Profile
+          </AppText>
         </View>
 
         <View style={styles.memberCard}>
           <View style={styles.avatar}>
-            <Text style={[styles.avatarInitial, { fontSize: scale(30) }]}>
+            <AppText style={[styles.avatarInitial, { fontSize: scale(30) }]}>
               {initial}
-            </Text>
+            </AppText>
           </View>
-          <Text style={[styles.memberName, { fontSize: scale(22) }]}>
+          <AppText style={[styles.memberName, { fontSize: scale(22) }]}>
             {displayName}
-          </Text>
-          <Text style={[styles.memberLabel, { fontSize: scale(14) }]}>
+          </AppText>
+          <AppText style={[styles.memberLabel, { fontSize: scale(14) }]}>
             SGO Member
-          </Text>
+          </AppText>
 
           <Pressable onPress={openEditModal} style={styles.editButton}>
-            <Text style={[styles.editButtonText, { fontSize: scale(14) }]}>
+            <AppText style={[styles.editButtonText, { fontSize: scale(14) }]}>
               Edit Profile
-            </Text>
+            </AppText>
           </Pressable>
 
           <Pressable
@@ -207,25 +207,25 @@ export default function ProfileScreen() {
             accessibilityLabel="Try onboarding again"
             accessibilityHint="Restarts the welcome and preferences setup"
           >
-            <Text style={[styles.demoButtonText, { fontSize: scale(14) }]}>
+            <AppText style={[styles.demoButtonText, { fontSize: scale(14) }]}>
               🔄 Try Onboarding Again
-            </Text>
+            </AppText>
           </Pressable>
         </View>
 
         <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { fontSize: scale(12) }]}>
+          <AppText style={[styles.sectionTitle, { fontSize: scale(12) }]}>
             SMART REWARDS
-          </Text>
+          </AppText>
           <View style={styles.card}>
             <View style={styles.rewardsSummary}>
               <View>
-                <Text style={[styles.pointsValue, { fontSize: scale(30) }]}>
+                <AppText style={[styles.pointsValue, { fontSize: scale(30) }]}>
                   {MOCK_REWARDS.points.toLocaleString()}
-                </Text>
-                <Text style={[styles.pointsLabel, { fontSize: scale(13) }]}>
+                </AppText>
+                <AppText style={[styles.pointsLabel, { fontSize: scale(13) }]}>
                   points balance
-                </Text>
+                </AppText>
               </View>
               <View
                 style={[
@@ -233,9 +233,11 @@ export default function ProfileScreen() {
                   { backgroundColor: TIER_COLORS[currentTier] },
                 ]}
               >
-                <Text style={[styles.tierBadgeText, { fontSize: scale(13) }]}>
+                <AppText
+                  style={[styles.tierBadgeText, { fontSize: scale(13) }]}
+                >
                   {currentTier}
-                </Text>
+                </AppText>
               </View>
             </View>
 
@@ -273,7 +275,7 @@ export default function ProfileScreen() {
                       ]}
                     />
 
-                    <Text
+                    <AppText
                       style={[
                         styles.tierLabel,
                         { fontSize: scale(10) },
@@ -282,7 +284,7 @@ export default function ProfileScreen() {
                       numberOfLines={1}
                     >
                       {tier}
-                    </Text>
+                    </AppText>
                   </Pressable>
                 );
               })}
@@ -299,42 +301,44 @@ export default function ProfileScreen() {
                     },
                   ]}
                 >
-                  <Text style={styles.tierInfoBadgeText}>{selectedTier}</Text>
+                  <AppText style={styles.tierInfoBadgeText}>
+                    {selectedTier}
+                  </AppText>
                 </View>
 
-                <Text style={styles.tierInfoTitle}>Minimum Points</Text>
+                <AppText style={styles.tierInfoTitle}>Minimum Points</AppText>
 
-                <Text style={styles.tierInfoText}>
+                <AppText style={styles.tierInfoText}>
                   {TIER_DETAILS[
                     selectedTier as keyof typeof TIER_DETAILS
                   ].minPoints.toLocaleString()}{" "}
                   points
-                </Text>
+                </AppText>
 
-                <Text style={styles.tierInfoTitle}>Benefits</Text>
+                <AppText style={styles.tierInfoTitle}>Benefits</AppText>
 
                 {TIER_DETAILS[
                   selectedTier as keyof typeof TIER_DETAILS
                 ].benefits.map((benefit) => (
-                  <Text key={benefit} style={styles.tierInfoText}>
+                  <AppText key={benefit} style={styles.tierInfoText}>
                     • {benefit}
-                  </Text>
+                  </AppText>
                 ))}
               </View>
             )}
 
-            <Text style={[styles.nextTierText, { fontSize: scale(14) }]}>
+            <AppText style={[styles.nextTierText, { fontSize: scale(14) }]}>
               {nextTier
                 ? `${pointsToNextTier.toLocaleString()} points to ${nextTier}`
                 : "You've reached the top tier!"}
-            </Text>
+            </AppText>
           </View>
         </View>
 
         <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { fontSize: scale(12) }]}>
+          <AppText style={[styles.sectionTitle, { fontSize: scale(12) }]}>
             ACCESSIBILITY
-          </Text>
+          </AppText>
           <View style={styles.card}>
             <SettingRow
               label="Larger Text"
@@ -348,9 +352,9 @@ export default function ProfileScreen() {
         </View>
 
         <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { fontSize: scale(12) }]}>
+          <AppText style={[styles.sectionTitle, { fontSize: scale(12) }]}>
             APP SETTINGS
-          </Text>
+          </AppText>
           <View style={styles.card}>
             <SettingRow
               label="Notifications"
@@ -378,10 +382,10 @@ export default function ProfileScreen() {
       >
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
-            <Text style={[styles.modalTitle, { fontSize: scale(18) }]}>
+            <AppText style={[styles.modalTitle, { fontSize: scale(18) }]}>
               Edit Name
-            </Text>
-            <TextInput
+            </AppText>
+            <AppTextInput
               value={tempName}
               onChangeText={setTempName}
               style={[styles.modalInput, { fontSize: scale(16) }]}
@@ -393,13 +397,13 @@ export default function ProfileScreen() {
                 onPress={() => setEditModalVisible(false)}
                 style={styles.modalCancelButton}
               >
-                <Text style={{ fontSize: scale(15) }}>Cancel</Text>
+                <AppText style={{ fontSize: scale(15) }}>Cancel</AppText>
               </Pressable>
               <Pressable
                 onPress={handleSaveName}
                 style={styles.modalSaveButton}
               >
-                <Text
+                <AppText
                   style={{
                     fontSize: scale(15),
                     color: "#FFFFFF",
@@ -407,7 +411,7 @@ export default function ProfileScreen() {
                   }}
                 >
                   Save
-                </Text>
+                </AppText>
               </Pressable>
             </View>
           </View>

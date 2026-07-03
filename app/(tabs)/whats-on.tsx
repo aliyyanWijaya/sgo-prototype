@@ -1,9 +1,9 @@
 import { Feather } from "@expo/vector-icons";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import AppText from "@/components/AppText";
 import { useUserPreferences } from "@/context/UserPreferencesContext";
-
 const BRAND = "#2B7A77";
 
 type EventCategory = "walk" | "market" | "culture" | "social" | "health";
@@ -105,38 +105,38 @@ function EventCard({
       <View style={styles.cardTopRow}>
         <View style={[styles.categoryBadge, { backgroundColor: meta.color }]}>
           <Feather name={meta.icon} size={14} color="#FFFFFF" />
-          <Text style={[styles.categoryBadgeText, { fontSize: scale(12) }]}>
+          <AppText style={[styles.categoryBadgeText, { fontSize: scale(12) }]}>
             {meta.label}
-          </Text>
+          </AppText>
         </View>
       </View>
 
-      <Text style={[styles.eventTitle, { fontSize: scale(19) }]}>
+      <AppText style={[styles.eventTitle, { fontSize: scale(19) }]}>
         {event.title}
-      </Text>
+      </AppText>
 
       <View style={styles.detailRow}>
         <Feather name="calendar" size={16} color="#6B7280" />
-        <Text style={[styles.detailText, { fontSize: scale(14) }]}>
+        <AppText style={[styles.detailText, { fontSize: scale(14) }]}>
           {event.date}
-        </Text>
+        </AppText>
       </View>
       <View style={styles.detailRow}>
         <Feather name="clock" size={16} color="#6B7280" />
-        <Text style={[styles.detailText, { fontSize: scale(14) }]}>
+        <AppText style={[styles.detailText, { fontSize: scale(14) }]}>
           {event.time}
-        </Text>
+        </AppText>
       </View>
       <View style={styles.detailRow}>
         <Feather name="map-pin" size={16} color="#6B7280" />
-        <Text style={[styles.detailText, { fontSize: scale(14) }]}>
+        <AppText style={[styles.detailText, { fontSize: scale(14) }]}>
           {event.location}
-        </Text>
+        </AppText>
       </View>
 
-      <Text style={[styles.eventDescription, { fontSize: scale(14) }]}>
+      <AppText style={[styles.eventDescription, { fontSize: scale(14) }]}>
         {event.description}
-      </Text>
+      </AppText>
     </View>
   );
 }
@@ -151,10 +151,12 @@ export default function WhatsOnScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.header}>
-          <Text style={[styles.label, { fontSize: scale(24) }]}>What's On</Text>
-          <Text style={[styles.sub, { fontSize: scale(15) }]}>
+          <AppText style={[styles.label, { fontSize: scale(24) }]}>
+            What's On
+          </AppText>
+          <AppText style={[styles.sub, { fontSize: scale(15) }]}>
             Local events and activities near you
-          </Text>
+          </AppText>
         </View>
 
         <View style={styles.eventsList}>
@@ -165,10 +167,10 @@ export default function WhatsOnScreen() {
 
         <View style={styles.footerNote}>
           <Feather name="info" size={16} color={BRAND} />
-          <Text style={[styles.footerNoteText, { fontSize: scale(13) }]}>
+          <AppText style={[styles.footerNoteText, { fontSize: scale(13) }]}>
             Events are updated weekly. Contact the venue directly to confirm
             details before attending.
-          </Text>
+          </AppText>
         </View>
       </ScrollView>
     </SafeAreaView>

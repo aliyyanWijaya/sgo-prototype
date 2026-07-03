@@ -1,9 +1,10 @@
 // app/(tabs)/map.tsx
-import { Text, View } from "react-native";
+import AppText from "@/components/AppText";
+import { View } from "react-native";
 export default function MapFallback() {
   return (
     <View>
-      <Text>Loading map…</Text>
+      <AppText>Loading map…</AppText>
     </View>
   );
 }

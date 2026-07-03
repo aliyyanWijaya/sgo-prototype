@@ -1,14 +1,9 @@
 import { Feather } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
-import {
-  ActivityIndicator,
-  Platform,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { ActivityIndicator, Platform, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import AppText from "@/components/AppText";
 import { useUserPreferences } from "@/context/UserPreferencesContext";
 import { formatJoinDate, loadMemberData, MemberData } from "@/utils/membership";
 
@@ -30,46 +25,48 @@ function MembershipCard({
       <View style={styles.decorCircleSmall} />
 
       <View style={styles.cardTopRow}>
-        <Text style={[styles.cardBrand, { fontSize: scale(16) }]}>
+        <AppText style={[styles.cardBrand, { fontSize: scale(16) }]}>
           SavGoSpend
-        </Text>
+        </AppText>
         <View style={styles.offlineBadge}>
           <Feather name="wifi-off" size={11} color="#FFFFFF" />
-          <Text style={[styles.offlineBadgeText, { fontSize: scale(11) }]}>
+          <AppText style={[styles.offlineBadgeText, { fontSize: scale(11) }]}>
             Available Offline
-          </Text>
+          </AppText>
         </View>
       </View>
 
       <View style={styles.cardMiddle}>
-        <Text
+        <AppText
           style={[styles.cardName, { fontSize: scale(28) }]}
           numberOfLines={2}
           adjustsFontSizeToFit
         >
           {data.name}
-        </Text>
-        <Text
+        </AppText>
+        <AppText
           style={[styles.cardNumber, { fontSize: scale(20) }]}
           accessibilityLabel={`Member number ${data.memberNumber.split("").join(" ")}`}
         >
           {data.memberNumber}
-        </Text>
+        </AppText>
       </View>
 
       <View style={styles.cardBottomRow}>
         <View>
           <View style={styles.tierBadge}>
-            <Text style={[styles.tierBadgeText, { fontSize: scale(11) }]}>
+            <AppText style={[styles.tierBadgeText, { fontSize: scale(11) }]}>
               {data.tier.toUpperCase()} MEMBER
-            </Text>
+            </AppText>
           </View>
-          <Text style={[styles.joinDate, { fontSize: scale(12) }]}>
+          <AppText style={[styles.joinDate, { fontSize: scale(12) }]}>
             Member since {formatJoinDate(data.joinDate)}
-          </Text>
+          </AppText>
         </View>
         <View style={styles.sgoMark}>
-          <Text style={[styles.sgoMarkText, { fontSize: scale(12) }]}>SGO</Text>
+          <AppText style={[styles.sgoMarkText, { fontSize: scale(12) }]}>
+            SGO
+          </AppText>
         </View>
       </View>
     </View>
@@ -84,12 +81,12 @@ function NoDataCard({ scale }: { scale: (n: number) => number }) {
       <View style={styles.noDataIconWrap}>
         <Feather name="credit-card" size={40} color="#9CA3AF" />
       </View>
-      <Text style={[styles.noDataTitle, { fontSize: scale(20) }]}>
+      <AppText style={[styles.noDataTitle, { fontSize: scale(20) }]}>
         No membership card yet
-      </Text>
-      <Text style={[styles.noDataBody, { fontSize: scale(15) }]}>
+      </AppText>
+      <AppText style={[styles.noDataBody, { fontSize: scale(15) }]}>
         Complete the welcome setup to generate your membership card.
-      </Text>
+      </AppText>
     </View>
   );
 }
@@ -111,12 +108,12 @@ export default function CardScreen() {
   return (
     <SafeAreaView style={styles.safe}>
       <View style={styles.container}>
-        <Text style={[styles.screenTitle, { fontSize: scale(26) }]}>
+        <AppText style={[styles.screenTitle, { fontSize: scale(26) }]}>
           Membership Card
-        </Text>
-        <Text style={[styles.screenSubtitle, { fontSize: scale(15) }]}>
+        </AppText>
+        <AppText style={[styles.screenSubtitle, { fontSize: scale(15) }]}>
           Your identity as an SGO member
-        </Text>
+        </AppText>
 
         {loading ? (
           <View style={styles.loadingWrap}>
@@ -127,10 +124,10 @@ export default function CardScreen() {
             <MembershipCard data={memberData} scale={scale} />
             <View style={styles.infoRow}>
               <Feather name="shield" size={16} color={BRAND} />
-              <Text style={[styles.infoText, { fontSize: scale(14) }]}>
+              <AppText style={[styles.infoText, { fontSize: scale(14) }]}>
                 This card works without internet. Show it at any participating
                 retailer.
-              </Text>
+              </AppText>
             </View>
           </>
         ) : (

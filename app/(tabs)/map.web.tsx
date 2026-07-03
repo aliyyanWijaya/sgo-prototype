@@ -1,14 +1,14 @@
 // app/(tabs)/map.web.tsx
-import { Feather } from "@expo/vector-icons";
-import { useEffect, useState } from "react";
-import { Linking, Pressable, StyleSheet, Text, View } from "react-native";
-
+import AppText from "@/components/AppText";
 import {
   CATEGORY_COLORS,
   HAMILTON_CENTER,
   RETAILERS,
   Retailer,
 } from "@/data/retailers";
+import { Feather } from "@expo/vector-icons";
+import { useEffect, useState } from "react";
+import { Linking, Pressable, StyleSheet, View } from "react-native";
 
 export default function MapScreen() {
   const [Map, setMap] = useState<any>(null);
@@ -53,7 +53,7 @@ export default function MapScreen() {
   if (!Map || !L) {
     return (
       <View style={styles.container}>
-        <Text>Loading map…</Text>
+        <AppText>Loading map…</AppText>
       </View>
     );
   }
@@ -141,25 +141,29 @@ export default function MapScreen() {
                 { backgroundColor: CATEGORY_COLORS[selected.category] },
               ]}
             />
-            <Text style={styles.panelCategory}>{selected.category}</Text>
+            <AppText style={styles.panelCategory}>{selected.category}</AppText>
           </View>
 
-          <Text style={styles.panelTitle}>{selected.name}</Text>
-          <Text style={styles.panelDistance}>{selected.distance}</Text>
+          <AppText style={styles.panelTitle}>{selected.name}</AppText>
+          <AppText style={styles.panelDistance}>{selected.distance}</AppText>
 
           {selected.address && (
             <View style={styles.infoLine}>
               <Feather name="map-pin" size={15} color="#6B7280" />
-              <Text style={styles.infoLineText}>{selected.address}</Text>
+              <AppText style={styles.infoLineText}>{selected.address}</AppText>
             </View>
           )}
 
-          <Text style={styles.panelDescription}>{selected.description}</Text>
+          <AppText style={styles.panelDescription}>
+            {selected.description}
+          </AppText>
 
           {selected.discountAvailable && (
             <View style={styles.discountBadge}>
               <Feather name="tag" size={13} color="#065F46" />
-              <Text style={styles.discountBadgeText}>Discount available</Text>
+              <AppText style={styles.discountBadgeText}>
+                Discount available
+              </AppText>
             </View>
           )}
 
@@ -171,7 +175,9 @@ export default function MapScreen() {
               accessibilityLabel={`Get directions to ${selected.name}`}
             >
               <Feather name="navigation" size={17} color="#FFFFFF" />
-              <Text style={styles.actionBtnTextPrimary}>Get Directions</Text>
+              <AppText style={styles.actionBtnTextPrimary}>
+                Get Directions
+              </AppText>
             </Pressable>
 
             {selected.phone && (
@@ -182,7 +188,7 @@ export default function MapScreen() {
                 accessibilityLabel={`Call ${selected.name}`}
               >
                 <Feather name="phone" size={17} color="#2B7A77" />
-                <Text style={styles.actionBtnTextSecondary}>Call</Text>
+                <AppText style={styles.actionBtnTextSecondary}>Call</AppText>
               </Pressable>
             )}
           </View>
