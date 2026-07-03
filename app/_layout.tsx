@@ -1,15 +1,19 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { Stack, useRouter, useSegments } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import { useEffect, useState } from 'react';
-import 'react-native-reanimated';
+import {
+  DarkTheme,
+  DefaultTheme,
+  ThemeProvider,
+} from "@react-navigation/native";
+import { Stack, useRouter, useSegments } from "expo-router";
+import { StatusBar } from "expo-status-bar";
+import { useEffect, useState } from "react";
+import "react-native-reanimated";
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { UserPreferencesProvider } from '@/context/UserPreferencesContext';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+import { UserPreferencesProvider } from "@/context/UserPreferencesContext";
+import { useColorScheme } from "@/hooks/use-color-scheme";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const unstable_settings = {
-  anchor: '(tabs)',
+  anchor: "(tabs)",
 };
 
 // Redirects to /onboarding when the user hasn't completed it yet,
@@ -21,19 +25,19 @@ function OnboardingGuard() {
   const router = useRouter();
 
   useEffect(() => {
-    AsyncStorage.getItem('onboarding_completed').then((val) => {
-      setOnboardingDone(val === 'true');
+    AsyncStorage.getItem("onboarding_completed").then((val) => {
+      setOnboardingDone(val === "true");
       setChecked(true);
     });
   }, []);
 
   useEffect(() => {
     if (!checked) return;
-    const inOnboarding = segments[0] === 'onboarding';
+    const inOnboarding = segments[0] === "onboarding";
     if (!onboardingDone && !inOnboarding) {
-      router.replace('/onboarding');
+      router.replace("/onboarding");
     } else if (onboardingDone && inOnboarding) {
-      router.replace('/(tabs)');
+      router.replace("/(tabs)");
     }
   }, [checked, onboardingDone, segments, router]);
 
@@ -45,20 +49,26 @@ export default function RootLayout() {
 
   return (
     <UserPreferencesProvider>
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
         <Stack>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="onboarding" options={{ headerShown: false }} />
-          <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
-          <Stack.Screen name="whats-on" options={{ title: "What's On" }} />
-          <Stack.Screen name="good-to-know" options={{ title: 'Good to Know' }} />
+          <Stack.Screen
+            name="modal"
+            options={{ presentation: "modal", title: "Modal" }}
+          />
+
+          <Stack.Screen
+            name="good-to-know"
+            options={{ title: "Good to Know" }}
+          />
           <Stack.Screen
             name="aroha"
             options={{
-              title: 'Aroha',
-              headerStyle: { backgroundColor: '#2B7A77' },
-              headerTintColor: '#FFFFFF',
-              headerTitleStyle: { fontWeight: '700', fontSize: 18 },
+              title: "Aroha",
+              headerStyle: { backgroundColor: "#2B7A77" },
+              headerTintColor: "#FFFFFF",
+              headerTitleStyle: { fontWeight: "700", fontSize: 18 },
             }}
           />
         </Stack>
