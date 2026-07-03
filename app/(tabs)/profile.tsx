@@ -30,6 +30,46 @@ import { router } from "expo-router";
 
 const BRAND = "#2B7A77";
 
+const TIER_DETAILS = {
+  Bronze: {
+    minPoints: 0,
+    benefits: ["Access to member promotions", "5% cashback rewards"],
+  },
+
+  Silver: {
+    minPoints: 500,
+    benefits: ["10% cashback rewards", "Early access to deals"],
+  },
+
+  Gold: {
+    minPoints: 1000,
+    benefits: [
+      "15% cashback rewards",
+      "Priority customer support",
+      "Exclusive partner offers",
+    ],
+  },
+
+  Platinum: {
+    minPoints: 2000,
+    benefits: [
+      "20% cashback rewards",
+      "VIP event invitations",
+      "Premium customer support",
+    ],
+  },
+
+  "Kiwi Elite": {
+    minPoints: 3500,
+    benefits: [
+      "25% cashback rewards",
+      "Dedicated account support",
+      "Exclusive national events",
+      "Highest membership privileges",
+    ],
+  },
+};
+
 type SettingRowProps = {
   label: string;
   description: string;
@@ -92,7 +132,7 @@ export default function ProfileScreen() {
   };
 
   const handleSaveName = () => {
-    if (!tempName.trim()) return; // jangan simpan kalau kosong
+    if (!tempName.trim()) return;
     setPreference("memberName", tempName.trim());
     setEditModalVisible(false);
   };
@@ -125,6 +165,8 @@ export default function ProfileScreen() {
   const currentTier = getCurrentTier(MOCK_REWARDS.points);
   const nextTier = getNextTier(MOCK_REWARDS.points);
   const pointsToNextTier = getPointsToNextTier(MOCK_REWARDS.points);
+
+  const [selectedTier, setSelectedTier] = useState(currentTier);
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -211,8 +253,14 @@ export default function ProfileScreen() {
                 const isUnlocked =
                   REWARD_TIERS.indexOf(tier) <=
                   REWARD_TIERS.indexOf(currentTier);
+
                 return (
-                  <View key={tier} style={styles.tierSegmentWrap}>
+                  <Pressable
+                    key={tier}
+                    style={styles.tierSegmentWrap}
+                    onPress={() => setSelectedTier(tier)}
+                    onHoverIn={() => setSelectedTier(tier)}
+                  >
                     <View
                       style={[
                         styles.tierSegment,
@@ -224,6 +272,7 @@ export default function ProfileScreen() {
                         isCurrent && styles.tierSegmentCurrent,
                       ]}
                     />
+
                     <Text
                       style={[
                         styles.tierLabel,
@@ -231,14 +280,48 @@ export default function ProfileScreen() {
                         isCurrent && styles.tierLabelCurrent,
                       ]}
                       numberOfLines={1}
-                      allowFontScaling
                     >
                       {tier}
                     </Text>
-                  </View>
+                  </Pressable>
                 );
               })}
             </View>
+
+            {selectedTier && (
+              <View style={styles.tierInfoCard}>
+                <View
+                  style={[
+                    styles.tierInfoBadge,
+                    {
+                      backgroundColor:
+                        TIER_COLORS[selectedTier as keyof typeof TIER_COLORS],
+                    },
+                  ]}
+                >
+                  <Text style={styles.tierInfoBadgeText}>{selectedTier}</Text>
+                </View>
+
+                <Text style={styles.tierInfoTitle}>Minimum Points</Text>
+
+                <Text style={styles.tierInfoText}>
+                  {TIER_DETAILS[
+                    selectedTier as keyof typeof TIER_DETAILS
+                  ].minPoints.toLocaleString()}{" "}
+                  points
+                </Text>
+
+                <Text style={styles.tierInfoTitle}>Benefits</Text>
+
+                {TIER_DETAILS[
+                  selectedTier as keyof typeof TIER_DETAILS
+                ].benefits.map((benefit) => (
+                  <Text key={benefit} style={styles.tierInfoText}>
+                    • {benefit}
+                  </Text>
+                ))}
+              </View>
+            )}
 
             <Text style={[styles.nextTierText, { fontSize: scale(14) }]}>
               {nextTier
@@ -496,6 +579,42 @@ const styles = StyleSheet.create({
   tierLabelCurrent: {
     color: "#111827",
     fontWeight: "700",
+  },
+  tierInfoCard: {
+    marginHorizontal: 16,
+    marginTop: 12,
+    padding: 14,
+    borderRadius: 12,
+    backgroundColor: "#F9FAFB",
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
+  },
+
+  tierInfoBadge: {
+    alignSelf: "flex-start",
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 999,
+    marginBottom: 10,
+  },
+
+  tierInfoBadgeText: {
+    color: "#FFFFFF",
+    fontWeight: "700",
+  },
+
+  tierInfoTitle: {
+    fontSize: 14,
+    fontWeight: "700",
+    color: "#111827",
+    marginTop: 8,
+    marginBottom: 4,
+  },
+
+  tierInfoText: {
+    fontSize: 13,
+    color: "#4B5563",
+    marginBottom: 4,
   },
   nextTierText: {
     color: "#374151",
