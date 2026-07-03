@@ -49,11 +49,7 @@ export default function RootLayout() {
               name="modal"
               options={{ presentation: "modal", title: "Modal" }}
             />
-            <Stack.Screen name="whats-on" options={{ title: "What's On" }} />
-            <Stack.Screen
-              name="good-to-know"
-              options={{ title: "Good to Know" }}
-            />
+
             <Stack.Screen
               name="aroha"
               options={{

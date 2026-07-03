@@ -97,6 +97,35 @@ export default function TabLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="good-to-know"
+        options={{
+          href: null,
+          headerShown: true,
+          title: "Good to Know",
+          headerLeft: () => (
+            <Pressable
+              onPress={() => {
+                if (router.canGoBack()) {
+                  router.back();
+                } else {
+                  router.replace("/(tabs)");
+                }
+              }}
+              hitSlop={12}
+              style={{ paddingHorizontal: 12 }}
+              accessibilityRole="button"
+              accessibilityLabel="Go back"
+            >
+              <Feather
+                name="arrow-left"
+                size={24}
+                color={Colors[colorScheme ?? "light"].tint}
+              />
+            </Pressable>
+          ),
+        }}
+      />
     </Tabs>
   );
 }
