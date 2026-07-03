@@ -10,6 +10,7 @@ import {
   Pressable,
   ScrollView,
   StyleSheet,
+  TextInput,
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -22,7 +23,8 @@ import { useUserPreferences } from "@/context/UserPreferencesContext";
 // iOS Simulator:   http://localhost:3000
 // Android Emulator: http://10.0.2.2:3000
 // Physical device:  replace with your machine's LAN IP, e.g. http://192.168.1.x:3000
-const AROHA_API_URL = "http://localhost:3000";
+const AROHA_API_URL =
+  process.env.EXPO_PUBLIC_API_URL || "http://localhost:3000";
 
 export const AROHA_INTRO_SEEN = "aroha_intro_seen";
 
@@ -341,7 +343,7 @@ export default function ArohaScreen() {
         </ScrollView>
 
         <View style={styles.inputBar}>
-          <AppTextInput
+          <TextInput
             style={[styles.textInput, { fontSize: scale(16) }]}
             value={input}
             onChangeText={setInput}

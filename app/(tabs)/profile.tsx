@@ -19,13 +19,12 @@ import {
   Switch,
   View,
 } from "react-native";
-import { Pressable } from "react-native-gesture-handler";
+import { Pressable, TextInput } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { MEMBER_DATA_KEY } from "@/utils/membership";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
-
 const BRAND = "#2B7A77";
 
 const TIER_DETAILS = {
@@ -385,7 +384,7 @@ export default function ProfileScreen() {
             <AppText style={[styles.modalTitle, { fontSize: scale(18) }]}>
               Edit Name
             </AppText>
-            <AppTextInput
+            <TextInput
               value={tempName}
               onChangeText={setTempName}
               style={[styles.modalInput, { fontSize: scale(16) }]}
