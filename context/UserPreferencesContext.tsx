@@ -92,7 +92,6 @@ export function UserPreferencesProvider({
   );
 
   const resetPreferences = useCallback(async () => {
-    // ← dan ini
     await AsyncStorage.multiRemove(Object.values(STORAGE_KEYS));
     setPrefs(DEFAULTS);
   }, []);

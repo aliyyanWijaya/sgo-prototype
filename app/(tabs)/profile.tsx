@@ -101,7 +101,7 @@ export default function ProfileScreen() {
     const doReset = async () => {
       await resetPreferences();
       await resetOnboarding();
-      await AsyncStorage.removeItem(MEMBER_DATA_KEY);
+      await AsyncStorage.multiRemove([MEMBER_DATA_KEY, "aroha_intro_seen"]);
       router.replace("/onboarding");
     };
 
