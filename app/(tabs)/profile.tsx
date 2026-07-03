@@ -155,9 +155,18 @@ export default function ProfileScreen() {
             </Text>
           </Pressable>
 
-          <Pressable onPress={handleReset} style={{ padding: 16 }}>
-            <Text style={{ color: "#DC2626", fontWeight: "600" }}>
-              Reset Onboarding (Dev)
+          <Pressable
+            onPress={handleReset}
+            style={({ pressed }) => [
+              styles.demoButton,
+              pressed && styles.demoButtonPressed,
+            ]}
+            accessibilityRole="button"
+            accessibilityLabel="Try onboarding again"
+            accessibilityHint="Restarts the welcome and preferences setup"
+          >
+            <Text style={[styles.demoButtonText, { fontSize: scale(14) }]}>
+              🔄 Try Onboarding Again
             </Text>
           </Pressable>
         </View>
@@ -506,6 +515,27 @@ const styles = StyleSheet.create({
   },
   editButtonText: {
     color: BRAND,
+    fontWeight: "600",
+  },
+  demoButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+    marginTop: 12,
+    paddingHorizontal: 18,
+    paddingVertical: 10,
+    borderRadius: 999,
+    backgroundColor: "#EEF2FF",
+    borderWidth: 1,
+    borderColor: "#C7D2FE",
+  },
+  demoButtonPressed: {
+    opacity: 0.8,
+    transform: [{ scale: 0.98 }],
+  },
+  demoButtonText: {
+    color: "#4338CA",
     fontWeight: "600",
   },
   modalOverlay: {
