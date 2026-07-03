@@ -1,6 +1,14 @@
 import { Feather } from "@expo/vector-icons";
+import { router } from "expo-router";
 import { useMemo, useState } from "react";
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useUserPreferences } from "@/context/UserPreferencesContext";
@@ -210,8 +218,16 @@ export default function GoodToKnowScreen() {
         <View style={styles.footerNote}>
           <Feather name="heart" size={16} color={BRAND} />
           <Text style={[styles.footerNoteText, { fontSize: scale(13) }]}>
-            Have a question that's not answered here? Ask Aroha, or reach out to
-            the SGO team anytime.
+            {"Have a question that's not answered here? "}
+            <Text
+              style={styles.footerNoteLink}
+              onPress={() => router.push("/aroha")}
+              accessibilityRole="link"
+              accessibilityLabel="Ask Aroha"
+            >
+              Ask Aroha
+            </Text>
+            {", or reach out to the SGO team anytime."}
           </Text>
         </View>
       </ScrollView>
@@ -256,7 +272,9 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderColor: "#E5E7EB",
     backgroundColor: "#FFFFFF",
-    ...({ outlineStyle: "none" } as any),
+    ...Platform.select({
+      web: { outlineStyle: "none" } as any,
+    }),
   },
   chipText: {
     fontWeight: "600",
@@ -333,5 +351,10 @@ const styles = StyleSheet.create({
     flex: 1,
     color: "#374151",
     lineHeight: 19,
+  },
+  footerNoteLink: {
+    color: BRAND,
+    fontWeight: "700",
+    textDecorationLine: "underline",
   },
 });
