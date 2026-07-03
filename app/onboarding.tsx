@@ -1,8 +1,7 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { router } from 'expo-router';
-import { useState } from 'react';
+import { router } from "expo-router";
+import { useState } from "react";
 
-import { generateMemberData, saveMemberData } from '@/utils/membership';
+import { generateMemberData, saveMemberData } from "@/utils/membership";
 import {
   KeyboardAvoidingView,
   Platform,
@@ -13,11 +12,11 @@ import {
   Text,
   TextInput,
   View,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-import { useUserPreferences } from '@/context/UserPreferencesContext';
-
+import { useOnboarding } from "@/context/OnboardingContext";
+import { useUserPreferences } from "@/context/UserPreferencesContext";
 // ─── Step 1: Welcome ────────────────────────────────────────────────────────
 
 function WelcomeStep({
@@ -32,10 +31,12 @@ function WelcomeStep({
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
       <ScrollView
         contentContainerStyle={styles.stepContent}
-        keyboardShouldPersistTaps="handled">
+        keyboardShouldPersistTaps="handled"
+      >
         <View style={styles.logoArea}>
           <Text style={styles.logoText}>SavGoSpend</Text>
           <View style={styles.logoBadge}>
@@ -62,10 +63,14 @@ function WelcomeStep({
         </View>
 
         <Pressable
-          style={({ pressed }) => [styles.primaryButton, pressed && styles.buttonPressed]}
+          style={({ pressed }) => [
+            styles.primaryButton,
+            pressed && styles.buttonPressed,
+          ]}
           onPress={onNext}
           accessibilityRole="button"
-          accessibilityLabel="Get Started">
+          accessibilityLabel="Get Started"
+        >
           <Text style={styles.primaryButtonText}>Get Started</Text>
         </Pressable>
       </ScrollView>
@@ -79,7 +84,7 @@ type PreferencesStepProps = {
   notifications: boolean;
   shareLocation: boolean;
   largerText: boolean;
-  onToggle: (key: 'notifications' | 'shareLocation' | 'largerText') => void;
+  onToggle: (key: "notifications" | "shareLocation" | "largerText") => void;
   onNext: () => void;
 };
 
@@ -91,32 +96,32 @@ function PreferencesStep({
   onNext,
 }: PreferencesStepProps) {
   const rows: {
-    key: 'notifications' | 'shareLocation' | 'largerText';
+    key: "notifications" | "shareLocation" | "largerText";
     label: string;
     description: string;
     value: boolean;
     testID: string;
   }[] = [
     {
-      key: 'notifications',
-      label: 'Notifications',
-      description: 'Get alerts about nearby retailers and events',
+      key: "notifications",
+      label: "Notifications",
+      description: "Get alerts about nearby retailers and events",
       value: notifications,
-      testID: 'toggle-notifications',
+      testID: "toggle-notifications",
     },
     {
-      key: 'shareLocation',
-      label: 'Share Location',
-      description: 'Needed to show shops and deals near you',
+      key: "shareLocation",
+      label: "Share Location",
+      description: "Needed to show shops and deals near you",
       value: shareLocation,
-      testID: 'toggle-share-location',
+      testID: "toggle-share-location",
     },
     {
-      key: 'largerText',
-      label: 'Larger Text',
-      description: 'Increases text size throughout the app',
+      key: "largerText",
+      label: "Larger Text",
+      description: "Increases text size throughout the app",
       value: largerText,
-      testID: 'toggle-larger-text',
+      testID: "toggle-larger-text",
     },
   ];
 
@@ -124,7 +129,7 @@ function PreferencesStep({
     <ScrollView contentContainerStyle={styles.stepContent}>
       <Text style={styles.stepTitle}>Set your preferences</Text>
       <Text style={styles.stepSubtitle}>
-        All options are off by default — turn on only what you want.{'\n'}
+        All options are off by default — turn on only what you want.{"\n"}
         You can change these later in Profile.
       </Text>
 
@@ -132,7 +137,11 @@ function PreferencesStep({
         {rows.map((row, index) => (
           <View
             key={row.key}
-            style={[styles.toggleRow, index < rows.length - 1 && styles.toggleRowBorder]}>
+            style={[
+              styles.toggleRow,
+              index < rows.length - 1 && styles.toggleRowBorder,
+            ]}
+          >
             <View style={styles.toggleText}>
               <Text style={styles.toggleLabel}>{row.label}</Text>
               <Text style={styles.toggleDescription}>{row.description}</Text>
@@ -141,7 +150,7 @@ function PreferencesStep({
               testID={row.testID}
               value={row.value}
               onValueChange={() => onToggle(row.key)}
-              trackColor={{ false: '#D1D5DB', true: '#2B7A77' }}
+              trackColor={{ false: "#D1D5DB", true: "#2B7A77" }}
               thumbColor="#FFFFFF"
               ios_backgroundColor="#D1D5DB"
               accessibilityLabel={row.label}
@@ -153,10 +162,14 @@ function PreferencesStep({
       </View>
 
       <Pressable
-        style={({ pressed }) => [styles.primaryButton, pressed && styles.buttonPressed]}
+        style={({ pressed }) => [
+          styles.primaryButton,
+          pressed && styles.buttonPressed,
+        ]}
         onPress={onNext}
         accessibilityRole="button"
-        accessibilityLabel="Next">
+        accessibilityLabel="Next"
+      >
         <Text style={styles.primaryButtonText}>Next</Text>
       </Pressable>
     </ScrollView>
@@ -187,7 +200,7 @@ function DoneStep({
       </View>
       <Text style={styles.doneTitle}>{"You're all set!"}</Text>
       <Text style={styles.doneSubtitle}>
-        Welcome to SavGoSpend{name ? `, ${name}` : ''}.
+        Welcome to SavGoSpend{name ? `, ${name}` : ""}.
       </Text>
       <Text style={styles.doneBody}>
         Your travel companion is ready to help you explore and save.
@@ -203,9 +216,10 @@ function DoneStep({
         onPress={handlePress}
         disabled={loading}
         accessibilityRole="button"
-        accessibilityLabel="Enter the App">
+        accessibilityLabel="Enter the App"
+      >
         <Text style={styles.primaryButtonText}>
-          {loading ? 'Loading…' : 'Enter the App'}
+          {loading ? "Loading…" : "Enter the App"}
         </Text>
       </Pressable>
     </View>
@@ -216,30 +230,30 @@ function DoneStep({
 
 export default function OnboardingScreen() {
   const [step, setStep] = useState(0);
-  const [name, setName] = useState('');
+  const [name, setName] = useState("");
   const [notifications, setNotifications] = useState(false);
   const [shareLocation, setShareLocation] = useState(false);
   const [largerText, setLargerText] = useState(false);
   const { setPreference } = useUserPreferences();
+  const { completeOnboarding } = useOnboarding();
 
-  const toggle = (key: 'notifications' | 'shareLocation' | 'largerText') => {
-    if (key === 'notifications') setNotifications((v) => !v);
-    else if (key === 'shareLocation') setShareLocation((v) => !v);
+  const toggle = (key: "notifications" | "shareLocation" | "largerText") => {
+    if (key === "notifications") setNotifications((v) => !v);
+    else if (key === "shareLocation") setShareLocation((v) => !v);
     else setLargerText((v) => !v);
   };
 
   const handleEnterApp = async () => {
-    const trimmedName = name.trim() || 'Traveller';
+    const trimmedName = name.trim() || "Traveller";
     await Promise.all([
-      setPreference('memberName', trimmedName),
-      setPreference('notifications', notifications),
-      setPreference('shareLocation', shareLocation),
-      setPreference('largerText', largerText),
-      // Generate the membership card data once and persist it permanently
+      setPreference("memberName", trimmedName),
+      setPreference("notifications", notifications),
+      setPreference("shareLocation", shareLocation),
+      setPreference("largerText", largerText),
       saveMemberData(generateMemberData(trimmedName)),
     ]);
-    await AsyncStorage.setItem('onboarding_completed', 'true');
-    router.replace('/(tabs)');
+    await completeOnboarding();
+    router.replace("/(tabs)");
   };
 
   return (
@@ -261,10 +275,7 @@ export default function OnboardingScreen() {
         />
       )}
       {step === 2 && (
-        <DoneStep
-          name={name.trim()}
-          onEnterApp={handleEnterApp}
-        />
+        <DoneStep name={name.trim()} onEnterApp={handleEnterApp} />
       )}
     </SafeAreaView>
   );
@@ -272,14 +283,14 @@ export default function OnboardingScreen() {
 
 // ─── Styles ──────────────────────────────────────────────────────────────────
 
-const BRAND = '#2B7A77';
-const TEXT_PRIMARY = '#111827';
-const TEXT_SECONDARY = '#374151';
+const BRAND = "#2B7A77";
+const TEXT_PRIMARY = "#111827";
+const TEXT_SECONDARY = "#374151";
 
 const styles = StyleSheet.create({
   safe: {
     flex: 1,
-    backgroundColor: '#F5F0EB',
+    backgroundColor: "#F5F0EB",
   },
 
   // Shared step layout
@@ -292,12 +303,12 @@ const styles = StyleSheet.create({
 
   // Step 1 — Welcome
   logoArea: {
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 20,
   },
   logoText: {
     fontSize: 36,
-    fontWeight: '800',
+    fontWeight: "800",
     color: BRAND,
     letterSpacing: -0.5,
   },
@@ -309,15 +320,15 @@ const styles = StyleSheet.create({
     marginTop: 6,
   },
   logoBadgeText: {
-    color: '#FFFFFF',
+    color: "#FFFFFF",
     fontSize: 14,
-    fontWeight: '700',
+    fontWeight: "700",
     letterSpacing: 2,
   },
   tagline: {
     fontSize: 18,
     color: TEXT_SECONDARY,
-    textAlign: 'center',
+    textAlign: "center",
     lineHeight: 26,
     marginBottom: 48,
   },
@@ -326,14 +337,14 @@ const styles = StyleSheet.create({
   },
   inputLabel: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
     color: TEXT_PRIMARY,
     marginBottom: 10,
   },
   input: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#FFFFFF",
     borderWidth: 1.5,
-    borderColor: '#D1D5DB',
+    borderColor: "#D1D5DB",
     borderRadius: 12,
     paddingHorizontal: 18,
     paddingVertical: 16,
@@ -345,7 +356,7 @@ const styles = StyleSheet.create({
   // Step 2 — Preferences
   stepTitle: {
     fontSize: 26,
-    fontWeight: '700',
+    fontWeight: "700",
     color: TEXT_PRIMARY,
     marginBottom: 10,
   },
@@ -356,19 +367,19 @@ const styles = StyleSheet.create({
     marginBottom: 36,
   },
   toggleList: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#FFFFFF",
     borderRadius: 16,
-    overflow: 'hidden',
+    overflow: "hidden",
     marginBottom: 40,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.06,
     shadowRadius: 6,
     elevation: 2,
   },
   toggleRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingHorizontal: 20,
     paddingVertical: 18,
     minHeight: 72,
@@ -376,28 +387,28 @@ const styles = StyleSheet.create({
   },
   toggleRowBorder: {
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#E5E7EB',
+    borderBottomColor: "#E5E7EB",
   },
   toggleText: {
     flex: 1,
   },
   toggleLabel: {
     fontSize: 17,
-    fontWeight: '600',
+    fontWeight: "600",
     color: TEXT_PRIMARY,
     marginBottom: 3,
   },
   toggleDescription: {
     fontSize: 13,
-    color: '#6B7280',
+    color: "#6B7280",
     lineHeight: 18,
   },
 
   // Step 3 — Done
   doneContainer: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     paddingHorizontal: 28,
     paddingBottom: 40,
   },
@@ -406,33 +417,33 @@ const styles = StyleSheet.create({
     height: 88,
     borderRadius: 44,
     backgroundColor: BRAND,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     marginBottom: 28,
   },
   checkMark: {
     fontSize: 44,
-    color: '#FFFFFF',
+    color: "#FFFFFF",
     lineHeight: 52,
   },
   doneTitle: {
     fontSize: 30,
-    fontWeight: '800',
+    fontWeight: "800",
     color: TEXT_PRIMARY,
     marginBottom: 10,
-    textAlign: 'center',
+    textAlign: "center",
   },
   doneSubtitle: {
     fontSize: 20,
-    fontWeight: '600',
+    fontWeight: "600",
     color: BRAND,
     marginBottom: 12,
-    textAlign: 'center',
+    textAlign: "center",
   },
   doneBody: {
     fontSize: 16,
     color: TEXT_SECONDARY,
-    textAlign: 'center',
+    textAlign: "center",
     lineHeight: 24,
     marginBottom: 48,
   },
@@ -442,17 +453,17 @@ const styles = StyleSheet.create({
     backgroundColor: BRAND,
     borderRadius: 14,
     paddingVertical: 18,
-    alignItems: 'center',
+    alignItems: "center",
     minHeight: 56,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   enterButton: {
-    width: '100%',
+    width: "100%",
   },
   primaryButtonText: {
-    color: '#FFFFFF',
+    color: "#FFFFFF",
     fontSize: 18,
-    fontWeight: '700',
+    fontWeight: "700",
   },
   buttonPressed: {
     opacity: 0.85,

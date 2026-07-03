@@ -1,3 +1,4 @@
+import { useOnboarding } from "@/context/OnboardingContext";
 import { useState } from "react";
 import {
   Alert,
@@ -81,7 +82,7 @@ export default function ProfileScreen() {
   } = useUserPreferences();
   const displayName = memberName || "Traveller";
   const initial = displayName[0].toUpperCase();
-
+  const { resetOnboarding } = useOnboarding();
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [tempName, setTempName] = useState(displayName);
 
@@ -99,7 +100,8 @@ export default function ProfileScreen() {
   const handleReset = () => {
     const doReset = async () => {
       await resetPreferences();
-      await AsyncStorage.multiRemove(["onboarding_completed", MEMBER_DATA_KEY]);
+      await resetOnboarding();
+      await AsyncStorage.removeItem(MEMBER_DATA_KEY);
       router.replace("/onboarding");
     };
 
