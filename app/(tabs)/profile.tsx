@@ -1,6 +1,8 @@
 import { useState } from "react";
 import {
+  Alert,
   Modal,
+  Platform,
   ScrollView,
   StyleSheet,
   Switch,
@@ -20,6 +22,10 @@ import {
   REWARD_TIERS,
   TIER_COLORS,
 } from "@/data/rewards";
+
+import { MEMBER_DATA_KEY } from "@/utils/membership";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { router } from "expo-router";
 
 const BRAND = "#2B7A77";
 
@@ -70,6 +76,7 @@ export default function ProfileScreen() {
     shareLocation,
     largerText,
     setPreference,
+    resetPreferences,
     scale,
   } = useUserPreferences();
   const displayName = memberName || "Traveller";
@@ -87,6 +94,30 @@ export default function ProfileScreen() {
     if (!tempName.trim()) return; // jangan simpan kalau kosong
     setPreference("memberName", tempName.trim());
     setEditModalVisible(false);
+  };
+
+  const handleReset = () => {
+    const doReset = async () => {
+      await resetPreferences();
+      await AsyncStorage.multiRemove(["onboarding_completed", MEMBER_DATA_KEY]);
+      router.replace("/onboarding");
+    };
+
+    if (Platform.OS === "web") {
+      const confirmed = window.confirm(
+        "This will clear your profile, preferences, and membership card, then restart onboarding. Continue?",
+      );
+      if (confirmed) doReset();
+    } else {
+      Alert.alert(
+        "Reset Onboarding",
+        "This will clear your profile, preferences, and membership card, then restart onboarding. Continue?",
+        [
+          { text: "Cancel", style: "cancel" },
+          { text: "Reset", style: "destructive", onPress: doReset },
+        ],
+      );
+    }
   };
 
   const currentTier = getCurrentTier(MOCK_REWARDS.points);
@@ -119,6 +150,12 @@ export default function ProfileScreen() {
           <Pressable onPress={openEditModal} style={styles.editButton}>
             <Text style={[styles.editButtonText, { fontSize: scale(14) }]}>
               Edit Profile
+            </Text>
+          </Pressable>
+
+          <Pressable onPress={handleReset} style={{ padding: 16 }}>
+            <Text style={{ color: "#DC2626", fontWeight: "600" }}>
+              Reset Onboarding (Dev)
             </Text>
           </Pressable>
         </View>
