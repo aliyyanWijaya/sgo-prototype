@@ -1,12 +1,13 @@
 // contexts/AccessibilityContext.tsx
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { createContext, useContext, useEffect, useState } from "react";
-
+import { Theme, themes } from "../constants/theme";
 type AccessibilityContextType = {
   fontScale: number; // 1.0 = normal, 1.2 = besar, 1.5 = extra besar
   setFontScale: (scale: number) => void;
   highContrast: boolean;
   toggleHighContrast: () => void;
+  theme: Theme;
   isLoaded: boolean;
 };
 
@@ -58,6 +59,8 @@ export function AccessibilityProvider({
     persist({ fontScale, highContrast: next });
   };
 
+  const theme = highContrast ? themes.highContrast : themes.normal;
+
   return (
     <AccessibilityContext.Provider
       value={{
@@ -65,6 +68,7 @@ export function AccessibilityProvider({
         setFontScale,
         highContrast,
         toggleHighContrast,
+        theme,
         isLoaded,
       }}
     >
@@ -77,7 +81,7 @@ export function useAccessibility() {
   const ctx = useContext(AccessibilityContext);
   if (!ctx)
     throw new Error(
-      "useAccessibility harus dipakai di dalam AccessibilityProvider",
+      "useAccessibility should be used within an AccessibilityProvider",
     );
   return ctx;
 }
