@@ -32,7 +32,7 @@ export const TIER_COLORS: Record<RewardTier, string> = {
 
 /** Mock member rewards balance — no backend, static for prototype purposes */
 export const MOCK_REWARDS = {
-  points: 3500,
+  points: 0,
 } as const;
 
 export function getCurrentTier(points: number): RewardTier {

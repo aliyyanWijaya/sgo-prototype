@@ -453,6 +453,7 @@ const styles = StyleSheet.create({
     backgroundColor: BRAND,
     alignItems: "center",
     justifyContent: "center",
+    marginTop: 40,
     marginBottom: 14,
     shadowColor: BRAND,
     shadowOffset: { width: 0, height: 4 },
