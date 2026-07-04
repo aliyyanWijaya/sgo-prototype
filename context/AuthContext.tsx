@@ -9,6 +9,7 @@ import {
   signInAnonymously,
   signInWithCredential,
   signInWithPopup,
+  updateProfile,
 } from "firebase/auth";
 import React, {
   createContext,
@@ -89,7 +90,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [promptAsync]);
 
   const continueAsGuest = useCallback(async () => {
-    await signInAnonymously(auth);
+    const credential = await signInAnonymously(auth);
+    await updateProfile(credential.user, { displayName: "Guest" });
+    // updateProfile mutates the User object but doesn't reliably trigger
+    // onAuthStateChanged, so we update state manually to force a re-render
+    // with the new displayName reflected immediately.
+    setUser({ ...credential.user });
   }, []);
 
   const signOut = useCallback(async () => {
