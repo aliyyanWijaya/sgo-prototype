@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { useAuth } from "@/context/AuthContext";
 import { useUserPreferences } from "@/context/UserPreferencesContext";
 
 type Tile = {
@@ -24,7 +25,8 @@ type Tile = {
 
 export default function HomeScreen() {
   const { memberName, scale } = useUserPreferences();
-  const displayName = memberName || "Traveller";
+  const { user } = useAuth(); //
+  const displayName = user?.displayName || memberName || "Traveller";
 
   const handleSosPress = () => {
     const showHelpConfirmation = () => {

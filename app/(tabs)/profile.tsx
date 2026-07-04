@@ -1,4 +1,5 @@
 import AppText from "@/components/AppText";
+import { useAuth } from "@/context/AuthContext";
 import { useOnboarding } from "@/context/OnboardingContext";
 import { useUserPreferences } from "@/context/UserPreferencesContext";
 import {
@@ -117,7 +118,8 @@ export default function ProfileScreen() {
     resetPreferences,
     scale,
   } = useUserPreferences();
-  const displayName = memberName || "Traveller";
+  const { user } = useAuth();
+  const displayName = user?.displayName || memberName || "Traveller";
   const initial = displayName[0].toUpperCase();
   const { resetOnboarding } = useOnboarding();
   const [editModalVisible, setEditModalVisible] = useState(false);

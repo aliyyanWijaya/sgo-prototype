@@ -131,10 +131,9 @@ export default function CardScreen() {
   const [memberData, setMemberData] = useState<MemberData | null>(null);
   const [loading, setLoading] = useState(true);
   const { scale } = useUserPreferences();
-  const { isGuest } = useAuth();
+  const { user, isGuest } = useAuth();
 
   useEffect(() => {
-    // Guest tidak punya member data, jadi skip fetch sama sekali
     if (isGuest) {
       setLoading(false);
       return;
@@ -144,6 +143,11 @@ export default function CardScreen() {
       setLoading(false);
     });
   }, [isGuest]);
+
+  const displayMemberData =
+    memberData && user?.displayName
+      ? { ...memberData, name: user.displayName }
+      : memberData;
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -161,9 +165,9 @@ export default function CardScreen() {
           <View style={styles.loadingWrap}>
             <ActivityIndicator size="large" color={BRAND} />
           </View>
-        ) : memberData ? (
+        ) : displayMemberData ? (
           <>
-            <MembershipCard data={memberData} scale={scale} />
+            <MembershipCard data={displayMemberData} scale={scale} />
             <View style={styles.infoRow}>
               <Feather name="shield" size={16} color={BRAND} />
               <AppText style={[styles.infoText, { fontSize: scale(14) }]}>
