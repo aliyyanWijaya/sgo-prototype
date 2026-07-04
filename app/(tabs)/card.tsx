@@ -13,7 +13,6 @@ import AppText from "@/components/AppText";
 import { useAuth } from "@/context/AuthContext";
 import { useUserPreferences } from "@/context/UserPreferencesContext";
 import { formatJoinDate, loadMemberData, MemberData } from "@/utils/membership";
-import { useRouter } from "expo-router";
 
 const BRAND = "#2B7A77";
 const CARD_BG = "#1D6863";
@@ -82,7 +81,7 @@ function MembershipCard({
 }
 
 function GuestLockedCard({ scale }: { scale: (n: number) => number }) {
-  const router = useRouter(); // dari "expo-router"
+  const { signOut } = useAuth(); // tambahkan ini
 
   return (
     <View style={styles.lockedWrap}>
@@ -96,7 +95,9 @@ function GuestLockedCard({ scale }: { scale: (n: number) => number }) {
       </AppText>
       <Pressable
         style={styles.lockedButton}
-        onPress={() => router.replace("/auth/login")}
+        onPress={async () => {
+          await signOut();
+        }}
       >
         <AppText style={[styles.lockedButtonText, { fontSize: scale(15) }]}>
           Sign In
