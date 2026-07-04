@@ -1,11 +1,19 @@
 import { Feather } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
-import { ActivityIndicator, Platform, StyleSheet, View } from "react-native";
+import {
+  ActivityIndicator,
+  Platform,
+  Pressable,
+  StyleSheet,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import AppText from "@/components/AppText";
+import { useAuth } from "@/context/AuthContext";
 import { useUserPreferences } from "@/context/UserPreferencesContext";
 import { formatJoinDate, loadMemberData, MemberData } from "@/utils/membership";
+import { useRouter } from "expo-router";
 
 const BRAND = "#2B7A77";
 const CARD_BG = "#1D6863";
@@ -73,6 +81,31 @@ function MembershipCard({
   );
 }
 
+function GuestLockedCard({ scale }: { scale: (n: number) => number }) {
+  const router = useRouter(); // dari "expo-router"
+
+  return (
+    <View style={styles.lockedWrap}>
+      <Feather name="lock" size={32} color={BRAND} />
+      <AppText style={[styles.lockedTitle, { fontSize: scale(18) }]}>
+        Member Card Locked
+      </AppText>
+      <AppText style={[styles.lockedText, { fontSize: scale(14) }]}>
+        Sign in with Google to get your digital member card and unlock retailer
+        discounts.
+      </AppText>
+      <Pressable
+        style={styles.lockedButton}
+        onPress={() => router.replace("/auth/login")}
+      >
+        <AppText style={[styles.lockedButtonText, { fontSize: scale(15) }]}>
+          Sign In
+        </AppText>
+      </Pressable>
+    </View>
+  );
+}
+
 // ─── Fallback (no data) ───────────────────────────────────────────────────────
 
 function NoDataCard({ scale }: { scale: (n: number) => number }) {
@@ -97,13 +130,19 @@ export default function CardScreen() {
   const [memberData, setMemberData] = useState<MemberData | null>(null);
   const [loading, setLoading] = useState(true);
   const { scale } = useUserPreferences();
+  const { isGuest } = useAuth();
 
   useEffect(() => {
+    // Guest tidak punya member data, jadi skip fetch sama sekali
+    if (isGuest) {
+      setLoading(false);
+      return;
+    }
     loadMemberData().then((data) => {
       setMemberData(data);
       setLoading(false);
     });
-  }, []);
+  }, [isGuest]);
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -115,7 +154,9 @@ export default function CardScreen() {
           Your identity as an SGO member
         </AppText>
 
-        {loading ? (
+        {isGuest ? (
+          <GuestLockedCard scale={scale} />
+        ) : loading ? (
           <View style={styles.loadingWrap}>
             <ActivityIndicator size="large" color={BRAND} />
           </View>
@@ -327,5 +368,33 @@ const styles = StyleSheet.create({
     color: "#6B7280",
     textAlign: "center",
     lineHeight: 22,
+  },
+  lockedWrap: {
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 40,
+    paddingHorizontal: 24,
+    gap: 8,
+  },
+  lockedTitle: {
+    fontWeight: "700",
+    color: BRAND,
+    marginTop: 4,
+  },
+  lockedText: {
+    textAlign: "center",
+    color: "#5A6670",
+    lineHeight: 20,
+  },
+  lockedButton: {
+    backgroundColor: BRAND,
+    borderRadius: 10,
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    marginTop: 12,
+  },
+  lockedButtonText: {
+    color: "#FFFFFF",
+    fontWeight: "600",
   },
 });
