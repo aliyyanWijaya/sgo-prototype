@@ -118,7 +118,7 @@ export default function ProfileScreen() {
     resetPreferences,
     scale,
   } = useUserPreferences();
-  const { user } = useAuth();
+  const { user, isGuest, signOut } = useAuth();
   const displayName = user?.displayName || memberName || "Traveller";
   const initial = displayName[0].toUpperCase();
   const { resetOnboarding } = useOnboarding();
@@ -158,6 +158,22 @@ export default function ProfileScreen() {
           { text: "Reset", style: "destructive", onPress: doReset },
         ],
       );
+    }
+  };
+
+  const handleSignOut = () => {
+    const doSignOut = async () => {
+      await signOut();
+    };
+
+    if (Platform.OS === "web") {
+      const confirmed = window.confirm("Are you sure you want to sign out?");
+      if (confirmed) doSignOut();
+    } else {
+      Alert.alert("Sign Out", "Are you sure you want to sign out?", [
+        { text: "Cancel", style: "cancel" },
+        { text: "Sign Out", style: "destructive", onPress: doSignOut },
+      ]);
     }
   };
 
@@ -210,6 +226,22 @@ export default function ProfileScreen() {
           >
             <AppText style={[styles.demoButtonText, { fontSize: scale(14) }]}>
               🔄 Try Onboarding Again
+            </AppText>
+          </Pressable>
+          <Pressable
+            onPress={handleSignOut}
+            style={({ pressed }) => [
+              styles.signOutButton,
+              pressed && styles.signOutButtonPressed,
+            ]}
+            accessibilityRole="button"
+            accessibilityLabel="Sign out"
+            accessibilityHint="Signs you out of your SGO account"
+          >
+            <AppText
+              style={[styles.signOutButtonText, { fontSize: scale(14) }]}
+            >
+              Sign Out
             </AppText>
           </Pressable>
         </View>
@@ -654,6 +686,24 @@ const styles = StyleSheet.create({
     backgroundColor: "#EEF2FF",
     borderWidth: 1,
     borderColor: "#C7D2FE",
+  },
+  signOutButton: {
+    marginTop: 12,
+    paddingHorizontal: 18,
+    paddingVertical: 10,
+    borderRadius: 999,
+    backgroundColor: "#FEF2F2",
+    borderWidth: 1,
+    borderColor: "#FECACA",
+  },
+  signOutButtonPressed: {
+    opacity: 0.8,
+    transform: [{ scale: 0.98 }],
+  },
+  signOutButtonText: {
+    color: "#DC2626",
+    fontWeight: "600",
+    textAlign: "center",
   },
   demoButtonPressed: {
     opacity: 0.8,
