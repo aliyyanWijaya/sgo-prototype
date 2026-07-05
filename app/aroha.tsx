@@ -46,6 +46,9 @@ const INTRO_MESSAGE: Message = {
     "What can I help you with today?",
 };
 
+const FALLBACK_REPLY =
+  "Ka aroha! I wasn't sure how to respond to that. Could you try asking in a different way?";
+
 // ─── Pronunciation guide modal ────────────────────────────────────────────────
 
 function PronunciationModal({ onDismiss }: { onDismiss: () => void }) {
@@ -254,6 +257,11 @@ export default function ArohaScreen() {
     setTimeout(() => scrollRef.current?.scrollToEnd({ animated }), 60);
   };
 
+  // Uses XMLHttpRequest instead of fetch because RN's fetch does not support
+  // reading a streaming response body incrementally on native (iOS/Android).
+  // XHR's `onprogress` + growing `responseText` works consistently on both
+  // native and web, which is what lets Aroha's reply appear progressively
+  // instead of all at once at the end.
   const sendMessage = async () => {
     const text = input.trim();
     if (!text || loading) return;
@@ -272,33 +280,84 @@ export default function ArohaScreen() {
     setLoading(true);
     scrollToBottom();
 
-    try {
-      const res = await fetch(`${AROHA_API_URL}/api/aroha-chat`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: text, conversationHistory: history }),
-      });
+    const arohaMsgId = `a-${Date.now()}`;
+    let arohaText = "";
+    let hasStartedStreaming = false;
+    let sseBuffer = "";
+    let processedLength = 0;
 
-      if (!res.ok) throw new Error(`Server responded with ${res.status}`);
+    await new Promise<void>((resolve) => {
+      const xhr = new XMLHttpRequest();
 
-      const data: { reply: string } = await res.json();
+      xhr.open("POST", `${AROHA_API_URL}/api/aroha-chat`);
+      xhr.setRequestHeader("Content-Type", "application/json");
 
-      const arohaMsg: Message = {
-        id: `a-${Date.now()}`,
-        role: "aroha",
-        content: data.reply,
+      xhr.onprogress = () => {
+        const newChunk = xhr.responseText.slice(processedLength);
+        processedLength = xhr.responseText.length;
+        sseBuffer += newChunk;
+
+        // Events are separated by a blank line ("\n\n"). The last split part
+        // may be an incomplete event still arriving, so keep it in the buffer
+        // for the next progress tick instead of trying to parse it early.
+        const parts = sseBuffer.split("\n\n");
+        sseBuffer = parts.pop() ?? "";
+
+        for (const part of parts) {
+          if (!part.startsWith("data: ")) continue;
+          const payload = part.slice(6);
+          if (payload === "[DONE]") continue;
+
+          try {
+            const { text: delta } = JSON.parse(payload);
+            if (!delta) continue;
+            arohaText += delta;
+
+            if (!hasStartedStreaming) {
+              hasStartedStreaming = true;
+              setLoading(false); // hide "thinking" bubble once first token lands
+              setMessages((prev) => [
+                ...prev,
+                { id: arohaMsgId, role: "aroha", content: arohaText },
+              ]);
+            } else {
+              setMessages((prev) =>
+                prev.map((m) =>
+                  m.id === arohaMsgId ? { ...m, content: arohaText } : m,
+                ),
+              );
+            }
+            scrollToBottom(false);
+          } catch {
+            // Malformed/partial JSON chunk — skip, next tick usually completes it
+          }
+        }
       };
 
-      setMessages((prev) => [...prev, arohaMsg]);
-    } catch {
-      setError(
-        "Aroha is having trouble connecting right now. " +
-          "Please check that the server is running, then try again.",
-      );
-    } finally {
-      setLoading(false);
-      scrollToBottom();
-    }
+      xhr.onerror = () => {
+        setError(
+          "Aroha is having trouble connecting right now. " +
+            "Please check that the server is running, then try again.",
+        );
+        setLoading(false);
+        resolve();
+      };
+
+      xhr.onload = () => {
+        if (!hasStartedStreaming) {
+          // Stream ended with no tokens at all — show a friendly fallback
+          setMessages((prev) => [
+            ...prev,
+            { id: arohaMsgId, role: "aroha", content: FALLBACK_REPLY },
+          ]);
+        }
+        setLoading(false);
+        scrollToBottom();
+        resolve();
+      };
+
+      xhr.send(JSON.stringify({ message: text, conversationHistory: history }));
+    });
   };
 
   const canSend = input.trim().length > 0 && !loading;

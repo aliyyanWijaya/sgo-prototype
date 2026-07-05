@@ -61,19 +61,26 @@ app.post("/api/aroha-chat", async (req, res) => {
   ];
 
   try {
-    const response = await anthropic.messages.create({
+    const stream = await anthropic.messages.create({
       model: "claude-haiku-4-5-20251001",
       system: AROHA_SYSTEM_PROMPT,
       messages,
       max_tokens: 512,
+      stream: true,
     });
 
-    const textBlock = response.content.find((b) => b.type === "text");
-    const reply =
-      textBlock?.text ??
-      "Ka aroha! I wasn't sure how to respond to that. Could you try asking in a different way?";
+    res.setHeader("Content-Type", "text/event-stream");
+    res.setHeader("Cache-Control", "no-cache");
+    res.setHeader("Connection", "keep-alive");
 
-    res.json({ reply });
+    for await (const event of stream) {
+      if (event.type === "content_block_delta" && event.delta?.text) {
+        res.write(`data: ${JSON.stringify({ text: event.delta.text })}\n\n`);
+      }
+    }
+
+    res.write("data: [DONE]\n\n");
+    res.end();
   } catch (err) {
     console.error("Anthropic API error:", err?.message ?? err);
     res.status(502).json({
